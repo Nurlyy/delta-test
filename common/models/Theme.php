@@ -38,7 +38,11 @@ class Theme extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
+            'name' => 'Название темы',
         ];
+    }
+
+    public function getQuestions(){
+        return $this->hasMany(Question::class, ['theme_id' => 'id']);
     }
 }

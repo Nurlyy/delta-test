@@ -9,7 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property string $title
- *
+ * @property int $theme_id
  * @property Answer[] $answers
  * @property Variant[] $variants
  */
@@ -29,8 +29,9 @@ class Question extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title'], 'required'],
+            [['title', 'theme_id'], 'required'],
             [['title'], 'string'],
+            [['theme_id'], 'integer'],
         ];
     }
 
@@ -41,8 +42,14 @@ class Question extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'title' => 'Title',
+            'title' => 'Текст вопроса',
+            'theme_id' => 'Название темы',
         ];
+    }
+
+
+    public function getThemeId(){
+        return $this->theme_id;
     }
 
     /**

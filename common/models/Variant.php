@@ -44,8 +44,8 @@ class Variant extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'title' => 'Title',
-            'question_id' => 'Question ID',
+            'title' => 'Текст ответа',
+            'question_id' => 'Название вопроса',
         ];
     }
 

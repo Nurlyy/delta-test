@@ -29,6 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'title:ntext',
+            'theme_id',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Question $model, $key, $index, $column) {

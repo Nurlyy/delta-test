@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\widgets\Pjax;
 
 /** @var yii\web\View $this */
 /** @var common\models\Theme $model */
@@ -9,15 +10,15 @@ use yii\widgets\ActiveForm;
 ?>
 
 <div class="theme-form">
-
-    <?php $form = ActiveForm::begin(); ?>
+<?php Pjax::begin(); ?>
+    <?php $form = ActiveForm::begin(['options' => ['data-pjax' => true]]); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-
+    <br>
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
-
+<?php Pjax::end(); ?>
 </div>
