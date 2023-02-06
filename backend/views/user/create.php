@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var common\models\Theme $model */
 
-$this->title = 'Создать новую тему';
+$this->title = 'Создать нового пользователя';
 $this->params['breadcrumbs'][] = ['label' => 'Themes', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

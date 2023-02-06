@@ -1,52 +1,88 @@
 <?php
 
-/** @var yii\web\View $this */
+/** @var \yii\web\View $this */
+/** @var string $content */
 
-$this->title = 'My Yii Application';
+use common\widgets\Alert;
+use frontend\assets\AppAsset;
+use yii\bootstrap5\Breadcrumbs;
+use yii\bootstrap5\Html;
+use yii\bootstrap5\Nav;
+use yii\bootstrap5\NavBar;
+
+AppAsset::register($this);
 ?>
-<div class="site-index">
-    <div class="p-5 mb-4 bg-transparent rounded-3">
-        <div class="container-fluid py-5 text-center">
-            <h1 class="display-4">Congratulations!</h1>
-            <p class="fs-5 fw-light">You have successfully created your Yii-powered application.</p>
-            <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
+<?php $this->beginPage() ?>
+<!DOCTYPE html>
+<html lang="<?= Yii::$app->language ?>" class="h-100">
+
+<head>
+    <meta charset="<?= Yii::$app->charset ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <?php $this->registerCsrfMetaTags() ?>
+    <title><?= Html::encode($this->title) ?></title>
+    <?php $this->head() ?>
+</head>
+
+<body class="d-flex flex-column h-100">
+    <?php $this->beginBody() ?>
+
+
+    <div class="site-index">
+
+        <div class="row col-12">
+            <h1 style="margin-top:10px;margin-bottom:25px;" class="text-center">Delta Testing</h1>
+            <div class="card" style="width: 90%; margin-left: auto; margin-right:auto;">
+                <div class="card-header">
+                    <h4>Список тем для теста:</h4>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <?php foreach ($themes as $theme) {
+                        $count_questions = 0;
+                        $count_answers = 0;
+                        foreach ($questions as $question) {
+                            if ($question['theme_id'] == $theme['id']) {
+                                $count_questions++;
+                                foreach ($answers as $answer) {
+                                    if ($answer['question_id'] == $question['id'])
+                                        $count_answers++;
+                                }
+                            }
+                        }
+                    ?>
+                        <li class="list-group-item">
+                            <div><?= $theme->name ?>
+                                <button style="float:right; position:relative;" class="button" disabled>
+                                <a style="text-decoration:none; color:white;" 
+                                href="<?php if($count_answers < $count_questions){
+                                    echo '/site/test-page?theme_id='.$theme->id.'&q_count='.$count_answers;
+                                } else if($count_answers == $count_questions){
+                                    echo '/site/view-results?theme_id='.$theme->id;
+                                } ?>">
+                                <?php if($count_answers == 0){
+                                    echo 'Начать';
+                                } else if($count_answers > 0 && $count_answers < $count_questions){
+                                    echo 'Продолжить';
+                                } else if($count_answers == $count_questions){
+                                    echo 'Посмотреть результаты';
+                                } ?>
+                                </a>
+                                </button>
+                                <div style="float:right; position:relative; margin-right:30px;" class="btn btn-warning">
+                                    <?= $count_answers ?>/<?= $count_questions ?>
+                                </div>
+                            </div>
+                        </li>
+                    <?php } ?>
+                </ul>
+            </div>
+
         </div>
+
     </div>
 
-    <div class="body-content">
+    <?php $this->endBody() ?>
+</body>
 
-        <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
-            </div>
-        </div>
-
-    </div>
-</div>
+</html>
+<?php $this->endPage();

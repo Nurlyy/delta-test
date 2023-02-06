@@ -6,6 +6,8 @@ use common\models\Question;
 use common\models\RightAnswer;
 use common\models\Theme;
 use common\models\Variant;
+use yii\filters\AccessControl;
+use common\components\AccessRule;
 use Exception;
 use yii\bootstrap5\ActiveForm;
 use yii\data\ActiveDataProvider;
@@ -13,6 +15,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
+use common\models\User;
 
 /**
  * ThemeController implements the CRUD actions for Theme model.
@@ -33,6 +36,39 @@ class ThemeController extends Controller
                         'delete' => ['POST'],
                     ],
                 ],
+                'access' => [
+                    'class' => AccessControl::class,
+                    'ruleConfig' => [
+                        'class' => AccessRule::class,
+                    ],
+                    // 'only' => ['search'],
+                    'rules' => [
+                        [
+                            'actions' => ['search'],
+                            'allow' => true,
+                            'roles' => ['@', User::STATUS_ACTIVE],
+
+                            'matchCallback' => function ($rule, $action) {
+                                return !\Yii::$app->user->identity->isAdmin();
+                            },
+                            'denyCallback' => function ($rule, $action) {
+                                return $this->redirect(["/site/index"]);
+                            },
+
+                        ],
+                        [
+                            'allow' => true,
+                            'roles' => ['@', User::STATUS_ADMIN],
+                            // 'roles' => ['@'],
+                            'matchCallback' => function ($rule, $action) {
+                                return \Yii::$app->user->identity->isAdmin();
+                            },
+                            'denyCallback' => function ($rule, $action) {
+                                return $this->redirect(["/site/index"]);
+                            },
+                        ],
+                    ],
+                ]
             ]
         );
     }
@@ -172,7 +208,7 @@ class ThemeController extends Controller
         $variant3 = new Variant();
         $variant4 = new Variant();
         $right_answer = new RightAnswer();
-        $theme = Theme::findOne(['id'=>$id]);
+        $theme = Theme::findOne(['id' => $id]);
 
         if ($this->request->isPost) {
             // var_dump($_POST);exit;
@@ -250,7 +286,7 @@ class ThemeController extends Controller
         if ($id !== null) {
             $question = Question::findOne(['id' => $id]);
             // var_dump($question);exit;
-            $theme = Theme::findOne(['id'=>$question->getThemeId()]);
+            $theme = Theme::findOne(['id' => $question->getThemeId()]);
             $variants = Variant::findAll(['question_id' => $question->id]);
             $variant1 = $variants[0];
             $variant2 = $variants[1];

@@ -15,6 +15,13 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+use common\components\AccessRule;
+use common\models\Answer;
+use common\models\User;
+use common\models\Question;
+use common\models\RightAnswer;
+use common\models\Theme;
+use common\models\Variant;
 
 /**
  * Site controller
@@ -29,7 +36,10 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout', 'signup'],
+                'ruleConfig' => [
+                    'class' => AccessRule::class,
+                ],
+                'only' => ['logout', 'signup', 'index'],
                 'rules' => [
                     [
                         'actions' => ['signup'],
@@ -39,7 +49,26 @@ class SiteController extends Controller
                     [
                         'actions' => ['logout'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => ['@', User::STATUS_PARTICIPANT],
+
+                        'matchCallback' => function ($rule, $action) {
+                            return \Yii::$app->user->identity->isParticipant();
+                        },
+                        'denyCallback' => function ($rule, $action) {
+                            return $this->redirect(["/site/index"]);
+                        },
+                    ],
+                    [
+                        'actions' => ['index'],
+                        'allow' => true,
+                        'roles' => ['@', User::STATUS_PARTICIPANT],
+
+                        'matchCallback' => function ($rule, $action) {
+                            return \Yii::$app->user->identity->isParticipant();
+                        },
+                        'denyCallback' => function ($rule, $action) {
+                            return $this->redirect(["/site/index"]);
+                        },
                     ],
                 ],
             ],
@@ -51,23 +80,6 @@ class SiteController extends Controller
             ],
         ];
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function actions()
-    {
-        return [
-            'error' => [
-                'class' => \yii\web\ErrorAction::class,
-            ],
-            'captcha' => [
-                'class' => \yii\captcha\CaptchaAction::class,
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
-        ];
-    }
-
     /**
      * Displays homepage.
      *
@@ -75,7 +87,89 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $themes = Theme::find()->all();
+        $questions = Question::find()->all();
+        $answers = Answer::find()->where(['user_id' => Yii::$app->user->id])->all();
+        $this->layout = 'empty';
+        return $this->render('index', ['themes' => $themes, 'questions' => $questions, 'answers' => $answers]);
+    }
+
+
+
+    public function actionTestPage()
+    {
+        $theme_id = isset($_GET['theme_id']) ? $_GET['theme_id'] : null;
+        $question_count = isset($_GET['q_count']) ? $_GET['q_count'] : 0;
+        if (isset($theme_id)) {
+            $theme = Theme::find()->where(['id' => $theme_id])->one();
+        }
+        $answers = Answer::find()->select('question_id')->where(['user_id' => Yii::$app->user->id])->asArray()->all();
+        $temp = [];
+        foreach($answers as $answer) {
+            array_push($temp, $answer['question_id']);
+        }
+        $answers = $temp;
+        $questions_count = Question::find()->where(['theme_id' => $theme_id])->count();
+        $question = Question::find()->where(['theme_id' => $theme->id])->andWhere(['not in', 'id', $answers])->one();
+        if(!isset($question)){
+            return $this->redirect('index');
+        }
+        $issecond = ((count($answers)+1)!=$questions_count)?'true':'false';
+        $variants = Variant::find()->where(['question_id' => $question->id])->all();
+
+        $this->layout = 'main';
+        return $this->render('testpage', [
+            'theme' => $theme,
+            'question' => $question,
+            'variants' => $variants,
+            'question_count' => $question_count,
+            'issecond' => $issecond,
+        ]);
+    }
+
+
+    public function actionAnswer()
+    {
+        if ($this->request->isPost) {
+            // var_dump($_POST);exit;
+            $question_id = isset($_POST['question_id']) ? $_POST['question_id'] : null;
+            $variant_id = isset($_POST['variant_id']) ? $_POST['variant_id'] : null;
+            $rightAnswer = RightAnswer::find()->where(['question_id' => $question_id])->one();
+            $answer = Answer::find()->where(['question_id' => $question_id])->one();
+            if ($answer == null) {
+                $answer = new Answer();
+            }
+            $answer->question_id = $question_id;
+            $answer->variant_id = $variant_id;
+            $answer->user_id = Yii::$app->user->id;
+            $answer->is_right = ($rightAnswer->variant_id == $variant_id) ? 1 : 0;
+            if ($answer->validate()) {
+                return $answer->save();
+            }
+            var_dump($answer->errors);
+            exit;
+        }
+    }
+
+    public function actionViewResults(){
+        $theme_id = isset($_GET['theme_id'])?$_GET['theme_id']:null;
+        $questions = Question::find()->where(['theme_id'=>$theme_id])->asArray()->all();
+        $answers = Answer::find()->where(['user_id'=>Yii::$app->user->id])->all();
+        $right_answers = [];
+        $variants = [];
+        foreach($questions as $question){
+            array_push($right_answers, RightAnswer::find()->where(['question_id'=>$question['id']])->one());
+            array_push($variants, Variant::find()->where(['question_id'=>$question['id']])->asArray()->all());
+            // var_dump($variants);
+        }
+        // var_dump($variants);exit;
+        return $this->render('view_results', [
+            'theme_id' => $theme_id,
+            'questions' => $questions,
+            'answers' => $answers,
+            'right_answers' => $right_answers,
+            'variants' => $variants,
+        ]);
     }
 
     /**
@@ -111,39 +205,6 @@ class SiteController extends Controller
         Yii::$app->user->logout();
 
         return $this->goHome();
-    }
-
-    /**
-     * Displays contact page.
-     *
-     * @return mixed
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($model->sendEmail(Yii::$app->params['adminEmail'])) {
-                Yii::$app->session->setFlash('success', 'Thank you for contacting us. We will respond to you as soon as possible.');
-            } else {
-                Yii::$app->session->setFlash('error', 'There was an error sending your message.');
-            }
-
-            return $this->refresh();
-        }
-
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return mixed
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
     }
 
     /**

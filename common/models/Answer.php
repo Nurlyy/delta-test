@@ -11,6 +11,7 @@ use Yii;
  * @property int|null $question_id
  * @property int|null $variant_id
  * @property int|null $user_id
+ * @property int $is_right
  *
  * @property Question $question
  * @property User $user
@@ -32,7 +33,7 @@ class Answer extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['question_id', 'variant_id', 'user_id'], 'integer'],
+            [['question_id', 'variant_id', 'user_id', 'is_right'], 'integer'],
             [['question_id'], 'exist', 'skipOnError' => true, 'targetClass' => Question::class, 'targetAttribute' => ['question_id' => 'id']],
             [['variant_id'], 'exist', 'skipOnError' => true, 'targetClass' => Variant::class, 'targetAttribute' => ['variant_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],

@@ -101,3 +101,18 @@ a.desc:after {
 {
     text-decoration: none;
 }
+
+.button {
+    position: absolute; 
+    padding: 10px 20px;  
+    background-color: #4CAF50;  
+    color: white !important;  
+    font-size: 14px;  
+    border-radius: 5px;  
+    text-decoration: none;
+
+    }  
+
+.button:hover {  
+    background-color:#45a049;  	
+}

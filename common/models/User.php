@@ -28,8 +28,8 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_DELETED = 0;
     const STATUS_INACTIVE = 9;
     const STATUS_ACTIVE = 10;
-    const STATUS_ADMIN = 5;
-
+    const STATUS_ADMIN = 3;
+    const STATUS_PARTICIPANT = 4;
 
     /**
      * {@inheritdoc}
@@ -56,7 +56,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED, self::STATUS_ADMIN]],
+            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED, self::STATUS_ADMIN, self::STATUS_PARTICIPANT]],
         ];
     }
 
@@ -65,7 +65,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['id' => $id, 'status' => ['or', self::STATUS_ACTIVE, self::STATUS_ADMIN, self::STATUS_PARTICIPANT]]);
     }
 
     /**
@@ -84,7 +84,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['username' => $username, 'status' => ['or', self::STATUS_ACTIVE, self::STATUS_ADMIN, self::STATUS_PARTICIPANT]]);
     }
 
     /**
@@ -212,7 +212,11 @@ class User extends ActiveRecord implements IdentityInterface
         $this->password_reset_token = null;
     }
 
-    public function isAdmin($id){
+    public function isAdmin(){
         return $this->status == $this::STATUS_ADMIN;
+    }
+
+    public function isParticipant(){
+        return $this->status == $this::STATUS_PARTICIPANT;
     }
 }
