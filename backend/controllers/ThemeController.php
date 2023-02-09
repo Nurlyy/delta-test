@@ -123,7 +123,7 @@ class ThemeController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect('index');
             }
         } else {
             $model->loadDefaultValues();
@@ -150,7 +150,7 @@ class ThemeController extends Controller
         }
 
         $dataProvider = new ActiveDataProvider([
-            'query' => Question::find(['theme_id' => $model->id]),
+            'query' => Question::find()->where(['theme_id' => $model->id]),
             /*
             'pagination' => [
                 'pageSize' => 50
@@ -225,7 +225,6 @@ class ThemeController extends Controller
                         $variant3->attributes = ($_POST['Variant'][3]);
                         $variant4->attributes = ($_POST['Variant'][4]);
                         if ($variant1->validate() && $variant2->validate() && $variant3->validate() && $variant4->validate()) {
-                            // var_dump($variant1);echo '<br>';var_dump($variant2);echo '<br>';var_dump($variant3);echo '<br>';var_dump($variant4);echo '<br>';exit;
                             if ($variant1->save() && $variant2->save() && $variant3->save() && $variant4->save()) {
                                 if ($right_answer->load($this->request->post())) {
                                     switch ($right_answer->variant_id) {

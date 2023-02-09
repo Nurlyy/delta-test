@@ -90,7 +90,7 @@ class SiteController extends Controller
         $themes = Theme::find()->all();
         $questions = Question::find()->all();
         $answers = Answer::find()->where(['user_id' => Yii::$app->user->id])->all();
-        $this->layout = 'empty';
+        $this->layout = 'main';
         return $this->render('index', ['themes' => $themes, 'questions' => $questions, 'answers' => $answers]);
     }
 
@@ -135,7 +135,7 @@ class SiteController extends Controller
             $question_id = isset($_POST['question_id']) ? $_POST['question_id'] : null;
             $variant_id = isset($_POST['variant_id']) ? $_POST['variant_id'] : null;
             $rightAnswer = RightAnswer::find()->where(['question_id' => $question_id])->one();
-            $answer = Answer::find()->where(['question_id' => $question_id])->one();
+            $answer = Answer::find()->where(['question_id' => $question_id, 'user_id' => Yii::$app->user->id])->one();
             if ($answer == null) {
                 $answer = new Answer();
             }
@@ -153,6 +153,7 @@ class SiteController extends Controller
 
     public function actionViewResults(){
         $theme_id = isset($_GET['theme_id'])?$_GET['theme_id']:null;
+        $theme = Theme::find()->where(['id' => $theme_id])->one();
         $questions = Question::find()->where(['theme_id'=>$theme_id])->asArray()->all();
         $answers = Answer::find()->where(['user_id'=>Yii::$app->user->id])->all();
         $right_answers = [];
@@ -169,6 +170,7 @@ class SiteController extends Controller
             'answers' => $answers,
             'right_answers' => $right_answers,
             'variants' => $variants,
+            'theme' => $theme,
         ]);
     }
 

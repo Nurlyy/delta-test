@@ -10,7 +10,7 @@ use Yii;
  * @property int $id
  * @property string $title
  * @property int $question_id
- *
+ * @property int $is_right
  * @property Answer[] $answers
  * @property Question $question
  */
@@ -32,8 +32,9 @@ class Variant extends \yii\db\ActiveRecord
         return [
             [['title', 'question_id'], 'required'],
             [['title'], 'string'],
-            [['question_id'], 'integer'],
+            [['question_id', 'is_right'], 'integer'],
             [['question_id'], 'exist', 'skipOnError' => true, 'targetClass' => Question::class, 'targetAttribute' => ['question_id' => 'id']],
+            [['right_answer'], 'default', 'value' => 0],
         ];
     }
 

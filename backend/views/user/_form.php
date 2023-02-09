@@ -17,7 +17,7 @@ use yii\widgets\Pjax;
     <br>
     <?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>
     <br>
-    <?= $form->field($model, 'password')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'password_hash')->textInput(['maxlength' => true, 'type' => 'password'])->label('Password') ?>
     <br>
     <div class="form-group">
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
