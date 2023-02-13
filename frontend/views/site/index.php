@@ -18,12 +18,6 @@ foreach ($themes as $theme) {
     }
 }
 
-$arr = [['key'=>'value'],['key2'=>'value2']];
-echo $arr['key2'];
-$some = $arr['key2'];
-$some = ['fdws'=>'gfdg', 'gfgfdgre'=>'gregre'];
-echo $arr['key2'];
-
 ?>
 <div class="site-index">
 

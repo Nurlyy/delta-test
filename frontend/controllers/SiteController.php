@@ -134,7 +134,7 @@ class SiteController extends Controller
             // var_dump($_POST);exit;
             $question_id = isset($_POST['question_id']) ? $_POST['question_id'] : null;
             $variant_id = isset($_POST['variant_id']) ? $_POST['variant_id'] : null;
-            $rightAnswer = RightAnswer::find()->where(['question_id' => $question_id])->one();
+            $variant = Variant::find()->where(['id' => $variant_id])->one();
             $answer = Answer::find()->where(['question_id' => $question_id, 'user_id' => Yii::$app->user->id])->one();
             if ($answer == null) {
                 $answer = new Answer();
@@ -142,7 +142,7 @@ class SiteController extends Controller
             $answer->question_id = $question_id;
             $answer->variant_id = $variant_id;
             $answer->user_id = Yii::$app->user->id;
-            $answer->is_right = ($rightAnswer->variant_id == $variant_id) ? 1 : 0;
+            $answer->is_right = $variant->is_right;
             if ($answer->validate()) {
                 return $answer->save();
             }

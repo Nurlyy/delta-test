@@ -224,31 +224,27 @@ class ThemeController extends Controller
                         $variant2->attributes = ($_POST['Variant'][2]);
                         $variant3->attributes = ($_POST['Variant'][3]);
                         $variant4->attributes = ($_POST['Variant'][4]);
+                        if ($right_answer->load($this->request->post())) {
+                            switch ($right_answer->variant_id) {
+                                case 1:
+                                    $variant1->is_right = 1;
+                                    break;
+                                case 2:
+                                    $variant2->is_right = 1;
+                                    break;
+                                case 3:
+                                    $variant3->is_right = 1;
+                                    break;
+                                case 4:
+                                    $variant4->is_right = 1;
+                                    break;
+                            }
+                        }
                         if ($variant1->validate() && $variant2->validate() && $variant3->validate() && $variant4->validate()) {
+
                             if ($variant1->save() && $variant2->save() && $variant3->save() && $variant4->save()) {
-                                if ($right_answer->load($this->request->post())) {
-                                    switch ($right_answer->variant_id) {
-                                        case 1:
-                                            $right_answer->variant_id = $variant1->id;
-                                            break;
-                                        case 2:
-                                            $right_answer->variant_id = $variant2->id;
-                                            break;
-                                        case 3:
-                                            $right_answer->variant_id = $variant3->id;
-                                            break;
-                                        case 4:
-                                            $right_answer->variant_id = $variant4->id;
-                                            break;
-                                    }
-                                    $right_answer->question_id = $question->id;
-                                    if ($right_answer->save()) {
-                                        $transaction->commit();
-                                        return $this->redirect(['update', 'id' => $theme->id]);
-                                    } else {
-                                        throw new Exception('right answer saving error');
-                                    }
-                                }
+                                $transaction->commit();
+                                return $this->redirect(['update', 'id' => $theme->id]);
                             } else {
                                 throw new Exception('variants saving error');
                             }
@@ -291,7 +287,8 @@ class ThemeController extends Controller
             $variant2 = $variants[1];
             $variant3 = $variants[2];
             $variant4 = $variants[3];
-            $right_answer = RightAnswer::findOne(['question_id' => $question->id]);
+            $right_answer = new RightAnswer();
+            $right_answer->variant_id = ($variant1->is_right == 1) ? $variant1->id : (($variant2->is_right == 1) ? $variant2->id : (($variant3->is_right == 1) ? $variant3->id : (($variant4->is_right == 1) ? $variant4->id : null)));
 
             if ($this->request->isPost) {
                 //     var_dump($_POST);
@@ -302,13 +299,31 @@ class ThemeController extends Controller
                 $variant4->attributes = $_POST['Variant'][4];
                 $right_answer->attributes = $_POST['RightAnswer'];
                 $right_answer->question_id = $question->id;
+                $variant1->is_right = 0;
+                $variant2->is_right = 0;
+                $variant3->is_right = 0;
+                $variant4->is_right = 0;
+
+                switch ($right_answer->variant_id) {
+                    case 1:
+                        $variant1->is_right = 1;
+                        break;
+                    case 2:
+                        $variant2->is_right = 1;
+                        break;
+                    case 3:
+                        $variant3->is_right = 1;
+                        break;
+                    case 4:
+                        $variant4->is_right = 1;
+                        break;
+                }
                 if (
                     $question->load($this->request->post()) &&
                     $variant1->validate() &&
                     $variant2->validate() &&
                     $variant3->validate() &&
-                    $variant4->validate() &&
-                    $right_answer->validate()
+                    $variant4->validate()
                 ) {
 
                     if (
@@ -316,8 +331,7 @@ class ThemeController extends Controller
                         $variant1->save() &&
                         $variant2->save() &&
                         $variant3->save() &&
-                        $variant4->save() &&
-                        $right_answer->save()
+                        $variant4->save()
                     ) {
                         return $this->redirect(['update', 'id' => $theme->id]);
                     }
@@ -341,17 +355,17 @@ class ThemeController extends Controller
         $question = Question::findOne($id);
         $theme = Theme::findOne(['id' => $question->getThemeId()]);
         $variants = Variant::findAll(['question_id' => $question->id]);
-        $right_answer = RightAnswer::findOne(['question_id' => $question->id]);
+        // $right_answer = RightAnswer::findOne(['question_id' => $question->id]);
         // var_dump($right_answer);exit;
         $deleted = [];
         $transaction = \Yii::$app->db->beginTransaction();
         try {
             // return $right_answer->delete();
-            if (!$right_answer->delete()) {
-                throw new Exception('right answer deleting error');
-            } else {
-                echo "right answer deleted successfully";
-            }
+            // if (!$right_answer->delete()) {
+            //     throw new Exception('right answer deleting error');
+            // } else {
+            //     echo "right answer deleted successfully";
+            // }
             foreach ($variants as $variant) {
                 if (!$variant->delete()) {
                     throw new Exception("variant {$variant->title} deleting error");

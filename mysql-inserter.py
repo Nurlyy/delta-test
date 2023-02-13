@@ -72,17 +72,19 @@ try:
             for questions in temp[theme_name]:
                 if(question[1] == questions):
                     for variant in temp[theme_name][questions]:
+                        is_right = 0
                         if(variant[3] == '+'):
-                            
+                            is_right = 1
+                            variant = variant.replace("+", "", 1)
                         
                         # print('     ' + questions)
-                        query = f'INSERT INTO question (title, question_id) VALUES ("'+variant+f'", {question[0]})'
-                        # cursor.execute(query)
-                        print(query)
+                        query = f'INSERT INTO variant (title, question_id, is_right) VALUES ("'+variant+f'", {question[0]}, {is_right})'
+                        cursor.execute(query)
+                        # print(query)
         
 
 # Commit your changes in the database
-    # connection.commit()
+    connection.commit()
 
 except Exception() as e:
     # Rolling back in case of error

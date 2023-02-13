@@ -15,24 +15,22 @@
                     foreach ($v as $variant) {
                         if ($variant['question_id'] == $question['id']) {
                             foreach ($right_answers as $right_answer) {
-                                if ($right_answer['question_id'] == $question['id']) {
-                                    if ($variant['id'] == $answer['variant_id'] && $variant['id'] == $right_answer['variant_id']) {
-                                        $variant['is_right'] = true;
-                                        $variant['is_chosen'] = true;
-                                        $isRight = true;
-                                    } else if ($variant['id'] == $answer['variant_id'] && $variant['id'] != $right_answer['variant_id']) {
-                                        $variant['is_right'] = false;
-                                        $variant['is_chosen'] = true;
-                                    } else if ($variant['id'] == $right_answer['variant_id']) {
-                                        $variant['is_right'] = true;
-                                        $variant['is_chosen'] = false;
-                                    } else {
-                                        $variant['is_right'] = false;
-                                        $variant['is_chosen'] = false;
-                                    }
-                                    array_push($temp_variants, $variant);
-                                    continue 2;
+                                if ($variant['id'] == $answer['variant_id'] && $variant['is_right'] == 1) {
+                                    $variant['is_right'] = true;
+                                    $variant['is_chosen'] = true;
+                                    $isRight = true;
+                                } else if ($variant['id'] == $answer['variant_id'] && $variant['is_right'] != 1) {
+                                    $variant['is_right'] = false;
+                                    $variant['is_chosen'] = true;
+                                } else if ($variant['is_right'] == 1) {
+                                    $variant['is_right'] = true;
+                                    $variant['is_chosen'] = false;
+                                } else {
+                                    $variant['is_right'] = false;
+                                    $variant['is_chosen'] = false;
                                 }
+                                array_push($temp_variants, $variant);
+                                continue 2;
                             }
                         }
                     }
@@ -44,7 +42,7 @@
         <div class="card-body" style="margin-bottom:50px;">
 
             <div class="card" style="width: 90%; margin-left: auto; margin-right:auto;">
-                <div class="card-header <?= ($isRight)?'true':'false' ?>">
+                <div class="card-header <?= ($isRight) ? 'true' : 'false' ?>">
                     <h4><?= $question['title'] ?></h4>
                 </div>
                 <div class="card-body">
@@ -54,7 +52,7 @@
                             <?php
                             foreach ($temp_variants as $variant) { ?>
 
-                                <input type="radio" id="variant_id" name="variant_id_<?= $question['id'] ?>" value="<?= $variant['id'] ?>" <?= ($variant['is_chosen'])?'checked':'' ?> disabled>
+                                <input type="radio" id="variant_id" name="variant_id_<?= $question['id'] ?>" value="<?= $variant['id'] ?>" <?= ($variant['is_chosen']) ? 'checked' : '' ?> disabled>
                                 <label for="child" class="text-<?= ($variant['is_chosen'] && $variant['is_right']) ? 'success' : (($variant['is_chosen'] && !$variant['is_right']) ? 'danger' : ((!$variant['is_chosen'] && $variant['is_right']) ? 'success' : '')) ?>"><strong><?= $variant['title'] ?></strong></label><br>
 
 
