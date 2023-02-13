@@ -42,6 +42,15 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'languages/view/<id:[\w]+>' => 'languages/view',
+                'languages/<language_id:[\w]+>/theme' => 'theme',
+                'languages/<language_id:[\w]+>/theme/update' => 'theme/update',
+                'languages/<language_id:[\w]+>/theme/create' => 'theme/create',
+                'languages/<language_id:[\w]+>/theme/delete' => 'theme/delete',
+                'languages/<language_id:[\w]+>/theme/create-question' => 'theme/create-question',
+                'languages/<language_id:[\w]+>/theme/update-question' => 'theme/update-question',
+                'languages/<language_id:[\w]+>/theme/delete-question' => 'theme/delete-question',
+
             ],
         ],
         

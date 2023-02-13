@@ -6,8 +6,9 @@ use yii\helpers\Html;
 /** @var common\models\Question $model */
 
 $this->title = 'Изменить вопрос';
-$this->params['breadcrumbs'][] = ['label' => 'Themes', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => 'Update', 'url' => ['update', 'id' => $theme->id]];
+$this->params['breadcrumbs'][] = ['label' => 'Языки', 'url' => ['/languages']];
+$this->params['breadcrumbs'][] = ['label' => $language->name, 'url' => ['/languages/view/'.$language->id]];
+$this->params['breadcrumbs'][] = ['label' => 'Темы', 'url' => ['/languages/'.$language->id.'/theme']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="question-create">

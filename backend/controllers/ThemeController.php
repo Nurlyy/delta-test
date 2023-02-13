@@ -8,6 +8,8 @@ use common\models\Theme;
 use common\models\Variant;
 use yii\filters\AccessControl;
 use common\components\AccessRule;
+use common\models\Answer;
+use common\models\Languages;
 use Exception;
 use yii\bootstrap5\ActiveForm;
 use yii\data\ActiveDataProvider;
@@ -78,10 +80,11 @@ class ThemeController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex($language_id)
     {
+        $language = Languages::find()->where(['id' => $language_id])->one();
         $dataProvider = new ActiveDataProvider([
-            'query' => Theme::find(),
+            'query' => Theme::find()->where(['language_id' => $language_id]),
             /*
             'pagination' => [
                 'pageSize' => 50
@@ -96,6 +99,7 @@ class ThemeController extends Controller
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
+            'language' => $language,
         ]);
     }
 
@@ -117,13 +121,19 @@ class ThemeController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    public function actionCreate()
+    public function actionCreate($language_id)
     {
+        $language = Languages::find()->where(['id' => $language_id])->one();
         $model = new Theme();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect('index');
+            if ($model->load($this->request->post())) {
+                $model->language_id = $language->id;
+                if ($model->validate()) {
+                    if ($model->save()) {
+                        return $this->redirect(['index', 'language_id' => $language->id]);
+                    }
+                }
             }
         } else {
             $model->loadDefaultValues();
@@ -131,6 +141,7 @@ class ThemeController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'language' => $language,
         ]);
     }
 
@@ -141,12 +152,13 @@ class ThemeController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id, $language_id)
     {
+        $language = Languages::find()->where(['id' => $language_id])->one();
         $model = $this->findModel($id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['languages/'.$language->id.'/theme/update', 'id' => $model->id]);
         }
 
         $dataProvider = new ActiveDataProvider([
@@ -166,6 +178,7 @@ class ThemeController extends Controller
         return $this->render('update', [
             'model' => $model,
             'dataProvider' => $dataProvider,
+            'language' => $language,
         ]);
     }
 
@@ -176,11 +189,43 @@ class ThemeController extends Controller
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public function actionDelete($id, $language_id)
     {
-        $this->findModel($id)->delete();
+        $language = Languages::find()->where(['id' => $language_id])->one();
+        $questions = Question::find()->where(['theme_id' => $id])->all();
+        try{
+            $transaction = \Yii::$app->db->beginTransaction();
 
-        return $this->redirect(['index']);
+            foreach($questions as $question){
+                $answers = Answer::find()->where(['question_id' => $question->id])->all();
+                $variants = Variant::find()->where(['question_id' => $question->id])->all();
+                foreach($answers as $answer){
+                    if(!$answer->delete()){
+                        throw new Exception("answer deleting error");
+                    }
+                }
+                foreach($variants as $variant){
+                    if(!$variant->delete()){
+                        throw new Exception("variant deleting error");
+                    }
+                }
+                if(!$question->delete()){
+                    throw new Exception("question deleting error");
+                }
+                
+            }
+            if(!$this->findModel($id)->delete()){
+                throw new Exception('theme deleting error');
+            }
+            $transaction->commit();
+            
+        } catch (\Exception $e) {
+            $transaction->rollback();
+        }
+        
+        
+
+        return $this->redirect(['languages/'.$language->id.'/theme']);
     }
 
     /**
@@ -200,8 +245,9 @@ class ThemeController extends Controller
     }
 
 
-    public function actionCreateQuestion($id)
+    public function actionCreateQuestion($id, $language_id)
     {
+        $language = Languages::find()->where(['id' => $language_id])->one();
         $question = new Question();
         $variant1 = new Variant();
         $variant2 = new Variant();
@@ -239,12 +285,13 @@ class ThemeController extends Controller
                                     $variant4->is_right = 1;
                                     break;
                             }
+                            // var_dump($variant2->is_right);exit;
                         }
                         if ($variant1->validate() && $variant2->validate() && $variant3->validate() && $variant4->validate()) {
 
                             if ($variant1->save() && $variant2->save() && $variant3->save() && $variant4->save()) {
                                 $transaction->commit();
-                                return $this->redirect(['update', 'id' => $theme->id]);
+                                return $this->redirect(['languages/'.$language->id.'/theme/update', 'id' => $theme->id]);
                             } else {
                                 throw new Exception('variants saving error');
                             }
@@ -270,12 +317,14 @@ class ThemeController extends Controller
             'variant3' => $variant3,
             'variant4' => $variant4,
             'right_answer' => $right_answer,
+            'language' => $language,
         ]);
     }
 
 
-    public function actionUpdateQuestion()
+    public function actionUpdateQuestion($language_id)
     {
+        $language = Languages::find()->where(['id' => $language_id])->one();
         $id = isset($_GET['id']) ? $_GET['id'] : null;
         // var_dump($id);
         if ($id !== null) {
@@ -291,8 +340,8 @@ class ThemeController extends Controller
             $right_answer->variant_id = ($variant1->is_right == 1) ? $variant1->id : (($variant2->is_right == 1) ? $variant2->id : (($variant3->is_right == 1) ? $variant3->id : (($variant4->is_right == 1) ? $variant4->id : null)));
 
             if ($this->request->isPost) {
-                    // var_dump($_POST);
-                    // exit;
+                // var_dump($_POST);
+                // exit;
                 $variant1->attributes = $_POST['Variant'][1];
                 $variant2->attributes = $_POST['Variant'][2];
                 $variant3->attributes = $_POST['Variant'][3];
@@ -305,16 +354,16 @@ class ThemeController extends Controller
                 $variant4->is_right = 0;
 
                 switch ($right_answer->variant_id) {
-                    case 1:
+                    case $variant1->id:
                         $variant1->is_right = 1;
                         break;
-                    case 2:
+                    case $variant2->id:
                         $variant2->is_right = 1;
                         break;
-                    case 3:
+                    case $variant3->id:
                         $variant3->is_right = 1;
                         break;
-                    case 4:
+                    case $variant4->id:
                         $variant4->is_right = 1;
                         break;
                 }
@@ -334,7 +383,7 @@ class ThemeController extends Controller
                         $variant3->save() &&
                         $variant4->save()
                     ) {
-                        return $this->redirect(['update', 'id' => $theme->id]);
+                        return $this->redirect(['languages/'.$language->id.'/theme/update', 'id' => $theme->id]);
                     }
                 }
             }
@@ -347,12 +396,14 @@ class ThemeController extends Controller
                 'variant4' => $variant4,
                 'right_answer' => $right_answer,
                 'theme' => $theme,
+                'language' => $language,
             ]);
         }
     }
 
-    public function actionDeleteQuestion($id)
+    public function actionDeleteQuestion($id, $language_id)
     {
+        $language = Languages::find()->where(['id' => $language_id])->one();
         $question = Question::findOne($id);
         $theme = Theme::findOne(['id' => $question->getThemeId()]);
         $variants = Variant::findAll(['question_id' => $question->id]);
@@ -380,6 +431,6 @@ class ThemeController extends Controller
             $transaction->rollback();
             return $e->getMessage();
         }
-        return $this->redirect(['update', 'id' => $theme->id]);
+        return $this->redirect(['languages/'.$language->id.'/theme/update', 'id' => $theme->id]);
     }
 }

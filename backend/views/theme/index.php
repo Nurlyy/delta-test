@@ -10,14 +10,16 @@ use yii\widgets\Pjax;
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = 'Темы';
+$this->params['breadcrumbs'][] = ['label' => 'Языки', 'url' => ['/languages']];
+$this->params['breadcrumbs'][] = ['label' => $language->name, 'url' => ['/languages/view/'.$language->id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="theme-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1><?= Html::encode($this->title) ?> языка <?= Html::encode($language->name) ?></h1>
 
     <p>
-        <?= Html::a('Создать новую тему', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Создать новую тему', ['/languages/'.$language->id."/theme/".'create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php Pjax::begin(); ?>
@@ -33,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => ActionColumn::className(),
                 'template' => '{update} {delete}',
                 'urlCreator' => function ($action, Theme $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
+                    return Url::toRoute(['/languages/'.$model->language_id."/theme/".$action, 'id' => $model->id]);
                 }
             ],
         ],

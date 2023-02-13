@@ -2,24 +2,23 @@
 
 namespace common\models;
 
-use common\models\Languages;
 use Yii;
 
 /**
- * This is the model class for table "theme".
+ * This is the model class for table "users_languages".
  *
  * @property int $id
- * @property string $name
- * @property Language $language_id
+ * @property int|null $language_id
+ * @property int|null $user_id
  */
-class Theme extends \yii\db\ActiveRecord
+class UsersLanguages extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'theme';
+        return 'users_languages';
     }
 
     /**
@@ -28,9 +27,9 @@ class Theme extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name'], 'required'],
-            [['name'], 'string', 'max' => 255],
+            [['language_id', 'user_id'], 'integer'],
             [['language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Languages::class, 'targetAttribute' => ['language_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -41,11 +40,8 @@ class Theme extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Название темы',
+            'language_id' => 'ID Языка',
+            'user_id' => 'ID Пользователя',
         ];
-    }
-
-    public function getQuestions(){
-        return $this->hasMany(Question::class, ['theme_id' => 'id']);
     }
 }

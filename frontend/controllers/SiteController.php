@@ -21,6 +21,7 @@ use common\models\User;
 use common\models\Question;
 use common\models\RightAnswer;
 use common\models\Theme;
+use common\models\UsersLanguages;
 use common\models\Variant;
 
 /**
@@ -87,7 +88,8 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $themes = Theme::find()->all();
+        $users_language = UsersLanguages::find()->where(['user_id' => Yii::$app->user->id])->one();
+        $themes = Theme::find()->where(['language_id' => $users_language->language_id])->all();
         $questions = Question::find()->all();
         $answers = Answer::find()->where(['user_id' => Yii::$app->user->id])->all();
         $this->layout = 'main';

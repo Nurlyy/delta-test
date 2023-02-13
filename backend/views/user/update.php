@@ -11,7 +11,7 @@ use yii\helpers\Url;
 /** @var common\models\Theme $model */
 
 $this->title = 'Изменить пользователя: ' . $model->username;
-$this->params['breadcrumbs'][] = ['label' => 'Темы', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Пользователи', 'url' => ['index']];
 $this->params['breadcrumbs'][] = 'Изменить '.$model->username;
 ?>
 <div class="theme-update">
@@ -20,6 +20,7 @@ $this->params['breadcrumbs'][] = 'Изменить '.$model->username;
 
     <?= $this->render('_form', [
         'model' => $model,
+        'users_languages' => $users_languages,
     ]) ?>
 
     <br>
