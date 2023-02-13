@@ -2,7 +2,6 @@
 
 namespace common\models;
 
-use JetBrains\PhpStorm\Language;
 use Yii;
 
 /**
@@ -10,16 +9,15 @@ use Yii;
  *
  * @property int $id
  * @property string $name
- * @property Language $language_id
  */
-class Theme extends \yii\db\ActiveRecord
+class Languages extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'theme';
+        return 'languages';
     }
 
     /**
@@ -30,8 +28,6 @@ class Theme extends \yii\db\ActiveRecord
         return [
             [['name'], 'required'],
             [['name'], 'string', 'max' => 255],
-            [['language_id'], 'int'],
-            [['language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['language_id' => 'id']],
         ];
     }
 
@@ -42,11 +38,7 @@ class Theme extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Название темы',
+            'name' => 'Название языка',
         ];
-    }
-
-    public function getQuestions(){
-        return $this->hasMany(Question::class, ['theme_id' => 'id']);
     }
 }

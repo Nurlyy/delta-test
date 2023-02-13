@@ -291,14 +291,14 @@ class ThemeController extends Controller
             $right_answer->variant_id = ($variant1->is_right == 1) ? $variant1->id : (($variant2->is_right == 1) ? $variant2->id : (($variant3->is_right == 1) ? $variant3->id : (($variant4->is_right == 1) ? $variant4->id : null)));
 
             if ($this->request->isPost) {
-                //     var_dump($_POST);
-                //     exit;
+                    // var_dump($_POST);
+                    // exit;
                 $variant1->attributes = $_POST['Variant'][1];
                 $variant2->attributes = $_POST['Variant'][2];
                 $variant3->attributes = $_POST['Variant'][3];
                 $variant4->attributes = $_POST['Variant'][4];
                 $right_answer->attributes = $_POST['RightAnswer'];
-                $right_answer->question_id = $question->id;
+                // var_dump($right_answer->variant_id);exit;
                 $variant1->is_right = 0;
                 $variant2->is_right = 0;
                 $variant3->is_right = 0;
@@ -318,6 +318,7 @@ class ThemeController extends Controller
                         $variant4->is_right = 1;
                         break;
                 }
+                // var_dump($variant1);exit;
                 if (
                     $question->load($this->request->post()) &&
                     $variant1->validate() &&
