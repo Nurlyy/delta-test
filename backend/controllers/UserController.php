@@ -41,19 +41,6 @@ class UserController extends Controller
                     // 'only' => ['search'],
                     'rules' => [
                         [
-                            'actions' => ['search'],
-                            'allow' => true,
-                            'roles' => ['@', User::STATUS_ACTIVE],
-
-                            'matchCallback' => function ($rule, $action) {
-                                return !\Yii::$app->user->identity->isAdmin();
-                            },
-                            'denyCallback' => function ($rule, $action) {
-                                return $this->redirect(["/site/index"]);
-                            },
-
-                        ],
-                        [
                             'allow' => true,
                             'roles' => ['@', User::STATUS_ADMIN],
                             // 'roles' => ['@'],
@@ -210,5 +197,33 @@ class UserController extends Controller
             'answers' => $answers,
             'right_answers' => $right_answers,
         ]);
+    }
+
+    public function actionDeleteResults()
+    {
+        $theme_id = $_GET['theme_id'];
+        $theme = Theme::find()->where(['id' => $theme_id])->one();
+        $user_id = $_GET['user_id'];
+        // $user = User::find()->where(['id' => $user_id])->one();
+        $questions = Question::find()->where(['theme_id' => $theme_id])->all();
+        try {
+            $transaction = \Yii::$app->db->beginTransaction();
+            foreach($questions as $question){
+                $answer = Answer::find()->where(['user_id' => $user_id])->andWhere(['question_id' => $question->id])->all();
+                foreach($answer as $a){
+                    if($a->delete()){
+
+                    } else {
+                        throw new \Exception('answer deleting error');
+                    }
+                }
+                
+            }
+            $transaction->commit();
+        }
+        catch (Exception $e){
+            $transaction->rollBack();
+        }
+        return $this->redirect(['user/view', 'id' => $user_id]);
     }
 }

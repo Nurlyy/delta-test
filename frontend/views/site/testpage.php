@@ -1,4 +1,10 @@
 <?php
+$is_right_count = 0;
+foreach($variants as $variant){
+    if($variant->is_right == 1){
+        $is_right_count += 1;
+    }
+}
 
 ?>
 
@@ -6,14 +12,14 @@
     <p class='text-center text-bold' style="font-size: 30px; font-style: bold;">Вопрос <?= $question_count + 1 ?>:</p>
     <div class="panel panel-default">
         <div class="panel-body">
-            <div class="card" style="">
+            <div class="card">
                 <div class="card-header">
                     <h4><?= $question->title ?></h4>
                 </div>
                 <div class="panel panel-default">
                     <div class="panel-body" style=" padding:10px;">
                         <?php foreach ($variants as $variant) { ?>
-                            <input type="radio" onclick="document.getElementById('submitbutton').disabled=false;" id="variant_id" name="variant_id" value="<?= $variant->id ?>" required>
+                            <input <?= $is_right_count > 1 ? "class='form-check-input' type='checkbox'" : 'type="radio"' ?> onclick="document.getElementById('submitbutton').disabled=false;" id="variant_id" name="variant_id" value="<?= $variant->id ?>" required>
                             <label for="child"><?= $variant->title ?></label><br>
                         <?php } ?>
                     </div>
@@ -29,11 +35,20 @@
 <?php $this->registerJs("
     issecond = {$issecond};
     $('#submitbutton').click(function() {
+        chosen = {};
+        checked = $('#variant_id:checked');
+
+        var checkedValues = $('#variant_id:checked').map(function() {
+            return this.value;
+        }).get();
+
+        // console.log(checkedValues);
+
         $.ajax({
             url: '/site/answer',
             type: 'POST',
             data: {
-                variant_id: $('#variant_id:checked').val(),
+                variants_id: checkedValues,
                 question_id: {$question->id},
                 '" . Yii::$app->request->csrfParam . "': '" . Yii::$app->request->csrfToken . "'
             },

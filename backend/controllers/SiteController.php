@@ -8,6 +8,7 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
+use common\models\User;
 
 /**
  * Site controller
@@ -19,28 +20,43 @@ class SiteController extends Controller
      */
     public function behaviors()
     {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'rules' => [
-                    [
-                        'actions' => ['login', 'error'],
-                        'allow' => true,
-                    ],
-                    [
-                        'actions' => ['logout', 'index'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
+        $behaviors = parent::behaviors();
+        $behaviors['access'] = [
+            'class' => AccessControl::class,
+            'ruleConfig' => [
+                'class' => '\common\components\AccessRule',
             ],
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'logout' => ['post'],
+            // 'only' => ['logout', 'signup', 'index'],
+            'rules' => [
+                [
+                    'actions' => ['login'],
+                    'allow' => true,
+                    'roles' => ['?'],
+                ],
+                [
+                    'actions' => ['logout'],
+                    'allow' => true,
+                    'roles' => ['@'],
+                ],
+                [
+                    'allow' => false,
+                    'roles' => ['@', User::STATUS_PARTICIPANT],
+                    'matchCallback' => function ($rule, $action) {
+                        return Yii::$app->user->identity->isParticipant();
+                    },
+                    'denyCallback' => function ($rule, $action) {
+                        return $this->redirect(["/site/logout"]);
+                    },
+                ],
+                [
+                    'allow' => true,
+                    'roles' => ['@', User::STATUS_ADMIN],
+                    // 'roles' => ['@'],
+                    
                 ],
             ],
         ];
+        return $behaviors;
     }
 
     /**

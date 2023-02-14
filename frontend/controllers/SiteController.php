@@ -34,52 +34,44 @@ class SiteController extends Controller
      */
     public function behaviors()
     {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'ruleConfig' => [
-                    'class' => AccessRule::class,
-                ],
-                'only' => ['logout', 'signup', 'index'],
-                'rules' => [
-                    [
-                        'actions' => ['signup'],
-                        'allow' => true,
-                        'roles' => ['?'],
-                    ],
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@', User::STATUS_PARTICIPANT],
-
-                        'matchCallback' => function ($rule, $action) {
-                            return \Yii::$app->user->identity->isParticipant();
-                        },
-                        'denyCallback' => function ($rule, $action) {
-                            return $this->redirect(["/site/index"]);
-                        },
-                    ],
-                    [
-                        'actions' => ['index'],
-                        'allow' => true,
-                        'roles' => ['@', User::STATUS_PARTICIPANT],
-
-                        'matchCallback' => function ($rule, $action) {
-                            return \Yii::$app->user->identity->isParticipant();
-                        },
-                        'denyCallback' => function ($rule, $action) {
-                            return $this->redirect(["/site/index"]);
-                        },
-                    ],
-                ],
+        // var_dump(Yii::$app->user->identity->status);exit;
+        $behaviors = parent::behaviors();
+        $behaviors['access'] = [
+            'class' => AccessControl::class,
+            'ruleConfig' => [
+                'class' => '\common\components\AccessRule',
             ],
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'logout' => ['post'],
+            // 'only' => ['logout', 'signup', 'index'],
+            'rules' => [
+                [
+                    'actions' => ['signup', 'login'],
+                    'allow' => true,
+                    'roles' => ['?'],
+                ],
+                [
+                    'actions' => ['logout'],
+                    'allow' => true,
+                    'roles' => ['@'],
+                ],
+                [
+                    'allow' => false,
+                    'roles' => ['@', User::STATUS_ADMIN],
+                    'matchCallback' => function ($rule, $action) {
+                        return Yii::$app->user->identity->isAdmin();
+                    },
+                    'denyCallback' => function ($rule, $action) {
+                        return $this->redirect(["/backend/site/index"]);
+                    },
+                ],
+                [
+                    'allow' => true,
+                    'roles' => ['@', User::STATUS_PARTICIPANT],
+                    // 'roles' => ['@'],
+                    
                 ],
             ],
         ];
+        return $behaviors;
     }
     /**
      * Displays homepage.
@@ -107,16 +99,16 @@ class SiteController extends Controller
         }
         $answers = Answer::find()->select('question_id')->where(['user_id' => Yii::$app->user->id])->asArray()->all();
         $temp = [];
-        foreach($answers as $answer) {
+        foreach ($answers as $answer) {
             array_push($temp, $answer['question_id']);
         }
         $answers = $temp;
         $questions_count = Question::find()->where(['theme_id' => $theme_id])->count();
         $question = Question::find()->where(['theme_id' => $theme->id])->andWhere(['not in', 'id', $answers])->one();
-        if(!isset($question)){
+        if (!isset($question)) {
             return $this->redirect('index');
         }
-        $issecond = ((count($answers)+1)!=$questions_count)?'true':'false';
+        $issecond = ((count($answers) + 1) != $questions_count) ? 'true' : 'false';
         $variants = Variant::find()->where(['question_id' => $question->id])->all();
 
         $this->layout = 'main';
@@ -133,44 +125,58 @@ class SiteController extends Controller
     public function actionAnswer()
     {
         if ($this->request->isPost) {
-            // var_dump($_POST);exit;
             $question_id = isset($_POST['question_id']) ? $_POST['question_id'] : null;
-            $variant_id = isset($_POST['variant_id']) ? $_POST['variant_id'] : null;
-            $variant = Variant::find()->where(['id' => $variant_id])->one();
-            $answer = Answer::find()->where(['question_id' => $question_id, 'user_id' => Yii::$app->user->id])->one();
-            if ($answer == null) {
-                $answer = new Answer();
+            $variants_id = isset($_POST['variants_id']) ? $_POST['variants_id'] : null;
+            try {
+                $transaction = Yii::$app->db->beginTransaction();
+                foreach ($variants_id as $variant_id) {
+                    $variant = Variant::find()->where(['id' => $variant_id])->one();
+                    $answer = Answer::find()->where(['question_id' => $question_id, 'user_id' => Yii::$app->user->id, 'variant_id' => $variant_id])->one();
+                    if ($answer == null) {
+                        $answer = new Answer();
+                    }
+                    $answer->question_id = $question_id;
+                    $answer->variant_id = $variant_id;
+                    $answer->user_id = Yii::$app->user->id;
+                    $answer->is_right = $variant->is_right;
+                    if ($answer->validate()) {
+                        if ($answer->save()) {
+                        } else {
+                            throw new \Exception('answer saving error');
+                        }
+                    } else {
+                        throw new \Exception('answer validation error');
+                    }
+                }
+                $transaction->commit();
+                return true;
+            } catch (\Exception $e) {
+                $transaction->rollBack();
             }
-            $answer->question_id = $question_id;
-            $answer->variant_id = $variant_id;
-            $answer->user_id = Yii::$app->user->id;
-            $answer->is_right = $variant->is_right;
-            if ($answer->validate()) {
-                return $answer->save();
-            }
-            var_dump($answer->errors);
-            exit;
         }
     }
 
-    public function actionViewResults(){
-        $theme_id = isset($_GET['theme_id'])?$_GET['theme_id']:null;
+    public function actionViewResults()
+    {
+        $theme_id = isset($_GET['theme_id']) ? $_GET['theme_id'] : null;
         $theme = Theme::find()->where(['id' => $theme_id])->one();
-        $questions = Question::find()->where(['theme_id'=>$theme_id])->asArray()->all();
-        $answers = Answer::find()->where(['user_id'=>Yii::$app->user->id])->all();
-        $right_answers = [];
+        $questions = Question::find()->where(['theme_id' => $theme_id])->asArray()->all();
+        $answers = [];
+        // $right_answers = [];
         $variants = [];
-        foreach($questions as $question){
-            array_push($right_answers, RightAnswer::find()->where(['question_id'=>$question['id']])->one());
-            array_push($variants, Variant::find()->where(['question_id'=>$question['id']])->asArray()->all());
+        foreach ($questions as $question) {
+            // array_push($right_answers, RightAnswer::find()->where(['question_id'=>$question['id']])->one());
+            array_push($answers, Answer::find()->where(['user_id' => Yii::$app->user->id])->andWhere(['question_id' => $question['id']])->asArray()->all());
+            array_push($variants, Variant::find()->where(['question_id' => $question['id']])->asArray()->all());
             // var_dump($variants);
         }
-        // var_dump($variants);exit;
+        if ($answers[0] == null) {
+            return $this->redirect('index');
+        }
         return $this->render('view_results', [
             'theme_id' => $theme_id,
             'questions' => $questions,
             'answers' => $answers,
-            'right_answers' => $right_answers,
             'variants' => $variants,
             'theme' => $theme,
         ]);

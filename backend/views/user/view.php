@@ -10,8 +10,10 @@ foreach ($themes as $theme) {
         if ($question['theme_id'] == $theme['id']) {
             $count_questions[$theme['id']] = isset($count_questions[$theme['id']]) ? $count_questions[$theme['id']] + 1 : 1;
             foreach ($answers as $answer) {
-                if ($answer['question_id'] == $question['id'])
+                if ($answer['question_id'] == $question['id']){
                     $count_answers[$theme['id']] = isset($count_answers[$theme['id']]) ? $count_answers[$theme['id']] + 1 : 1;
+                    continue 2;
+                }
             }
         }
     }
@@ -70,7 +72,16 @@ foreach ($themes as $theme) {
                     ?>
                             <li class="list-group-item">
                                 <div><?= $theme->name ?>
-                                    <button style="float:right; position:relative;" class="button" disabled>
+                                    <button style="float:right; position:relative; margin-top:3px;" class="btn btn-danger">
+                                        <a style="text-decoration:none; color:white;" href="<?php if ($count_answers[$theme['id']] == $count_questions[$theme['id']]) {
+                                                                                                echo '/backend/user/delete-results?theme_id=' . $theme['id'] . '&user_id=' . $model->id;
+                                                                                            } ?>">
+                                            <?php if ($count_answers[$theme['id']] == $count_questions[$theme['id']]) {
+                                                echo 'Удалить результаты';
+                                            } ?>
+                                        </a>
+                                    </button>
+                                    <button style="float:right; position:relative;margin-right:30px;" class="button" disabled>
                                         <a style="text-decoration:none; color:white;" href="<?php if ($count_answers[$theme['id']] == $count_questions[$theme['id']]) {
                                                                                                 echo '/backend/user/view-results?theme_id=' . $theme['id'] . '&user_id=' . $model->id;
                                                                                             } ?>">

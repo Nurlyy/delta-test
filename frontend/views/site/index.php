@@ -8,12 +8,14 @@ foreach ($themes as $theme) {
         if ($question['theme_id'] == $theme['id']) {
             $count_questions[$theme['id']] = isset($count_questions[$theme['id']]) ? $count_questions[$theme['id']] + 1 : 1;
             foreach ($answers as $answer) {
-                if ($answer['question_id'] == $question['id'])
+                if ($answer['question_id'] == $question['id']){
                     $count_answers[$theme['id']] = isset($count_answers[$theme['id']]) ? $count_answers[$theme['id']] + 1 : 1;
+                    continue 2;
+                }
             }
         }
     }
-    if ($count_answers[$theme['id']] >= 0 && $count_answers[$theme['id']] != $count_questions[$theme['id']]) {
+    if ($count_answers[$theme['id']] >= 0 && $count_answers[$theme['id']] <= $count_questions[$theme['id']]) {
         $unfinished_themes++;
     }
 }
