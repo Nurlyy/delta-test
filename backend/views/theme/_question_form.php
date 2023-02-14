@@ -7,41 +7,111 @@ use yii\bootstrap5\ActiveForm;
 /** @var common\models\Question $question */
 /** @var yii\widgets\ActiveForm $form */
 
-if (isset($variant1->id) && isset($variant2->id) && isset($variant3->id) && isset($variant4->id)) {
-    $variants = [];
-    $variants = [$variant1->id => '1', $variant2->id => '2', $variant3->id => '3', $variant4->id => '4'];
-} else {
-    $variants = [1 => "1", 2 => "2", 3 => "3", 4 => "4"];
-}
+// if (isset($variant1->id) && isset($variant2->id) && isset($variant3->id) && isset($variant4->id)) {
+//     $variants = [];
+//     $variants = [$variant1->id => '1', $variant2->id => '2', $variant3->id => '3', $variant4->id => '4'];
+// } else {
+//     $variants = [1 => "1", 2 => "2", 3 => "3", 4 => "4"];
+// }
+
+// var_dump($variants);exit;
 
 ?>
 
 
 <div class="question-form">
 
-    <?php $form = ActiveForm::begin(); ?>
-
-    <?= $form->field($question, 'title')->textarea(['rows' => 6]) ?>
-    <br>
-    <?= $form->field($question, 'theme_id')->dropDownList([$theme['id'] => $theme['name']]) ?>
-    <br>
-    <h3>Варианты ответа</h3>
-    <?= $form->field($variant1, '[1]title')->textInput(['id' => 'variant1', 'placeholder' => 'Первый вариант', 'style' => 'width:500px;margin-left:30px;'])->label('1)', ['style' => 'float:left;']) ?>
-    <?= $form->field($variant2, '[2]title')->textInput(['id' => 'variant2', 'placeholder' => 'Второй вариант', 'style' => 'width:500px;margin-left:30px;'])->label('2)', ['style' => 'float:left;']) ?>
-    <?= $form->field($variant3, '[3]title')->textInput(['id' => 'variant3', 'placeholder' => 'Третьий вариант', 'style' => 'width:500px;margin-left:30px;'])->label('3)', ['style' => 'float:left;']) ?>
-    <?= $form->field($variant4, '[4]title')->textInput(['id' => 'variant4', 'placeholder' => 'Четвертый вариант', 'style' => 'width:500px;margin-left:30px;'])->label('4)', ['style' => 'float:left;']) ?>
-    <?= $form->field($right_answer, 'variant_id')->dropDownList($variants, ['required' => true, 'prompt' => [
-        'text' => 'Выберите правильный вариант',
-        'options' => ['disabled' => true, 'Selected' => true],
-        'value' => '-1',
-    ]])->label('Правильный ответ:') ?>
+    <div class="question-create">
 
 
-    <br>
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-primary']) ?>
+
+        <div class="question-form">
+
+            <form id="w0">
+                <input type="hidden" name="_csrf-backend" value="<?= Yii::$app->request->csrfToken ?>">
+                <div class="mb-3 field-question-title required">
+                    <label class="form-label" for="question-title">Текст вопроса</label>
+                    <textarea id="question-title" class="form-control" name="Question[title]" rows="6" aria-required="true"></textarea>
+
+                    <div class="invalid-feedback"></div>
+                </div> <br>
+                <div class="mb-3 field-question-theme_id required">
+                    <label class="form-label" for="question-theme_id">Название темы</label>
+                    <select id="question-theme_id" class="form-select" name="Question[theme_id]" aria-required="true">
+                        <option value="8">&#xFEFF;<?= $theme->name ?></option>
+                    </select>
+
+                    <div class="invalid-feedback"></div>
+                </div> <br>
+                <h3>Варианты ответа</h3>
+                <div class="variants">
+
+                </div>
+
+                <br>
+                <div class="mb-3" style="padding:0px !important;">
+                    <div class="btn btn-success" id="add_variant" style="padding:10px !important;">
+                        <p style="padding:0px !important;margin:0px !important;">+ Добавить вариант</p>
+                    </div>
+                </div>
+                <!-- <div class="mb-3 field-rightanswer-variant_id">
+                    <label class="form-label" for="rightanswer-variant_id">Правильный ответ:</label>
+                    <select id="rightanswer-variant_id" class="form-select" name="RightAnswer[variant_id]" required="">
+                        <option value="-1" disabled="true" selected="">Выберите правильный вариант</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+
+                    <div class="invalid-feedback"></div>
+                </div> -->
+
+                <br>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary" id="btn_save">Save</button>
+                </div>
+
+            </form>
+        </div>
     </div>
 
-    <?php ActiveForm::end(); ?>
+
 
 </div>
+
+<?php $this->registerJs("
+
+    
+
+    $(document).ready(function(){
+        
+        counter = 0;
+        variants = " . json_encode($variants) . ";
+        console.log(variants);
+
+        on_create(variants);
+
+        
+
+        
+
+        console.log(variants);
+        
+        $('#btn_save').click(function(){
+            $.ajax({
+                url: window.location.href,
+                type: 'POST',
+                data: {variants, '_csrf-backend': '".Yii::$app->request->csrfToken."'},
+                success: function(data) {
+                    console.log(data);
+                    console.log('success');
+                }
+            });
+        });
+        
+
+    });
+
+    
+") ?>

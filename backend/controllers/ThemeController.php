@@ -18,6 +18,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
 use common\models\User;
+use yii\base\Model;
 
 /**
  * ThemeController implements the CRUD actions for Theme model.
@@ -249,11 +250,12 @@ class ThemeController extends Controller
     {
         $language = Languages::find()->where(['id' => $language_id])->one();
         $question = new Question();
-        $variant1 = new Variant();
-        $variant2 = new Variant();
-        $variant3 = new Variant();
-        $variant4 = new Variant();
-        $right_answer = new RightAnswer();
+        $variants = [];
+        // $variant1 = new Variant();
+        // $variant2 = new Variant();
+        // $variant3 = new Variant();
+        // $variant4 = new Variant();
+        // $right_answer = new RightAnswer();
         $theme = Theme::findOne(['id' => $id]);
 
         if ($this->request->isPost) {
@@ -262,40 +264,52 @@ class ThemeController extends Controller
                 $transaction = \Yii::$app->db->beginTransaction();
                 if ($question->load($this->request->post())) {
                     if ($question->save()) {
-                        $variant1->question_id = $question->id;
-                        $variant2->question_id = $question->id;
-                        $variant3->question_id = $question->id;
-                        $variant4->question_id = $question->id;
-                        $variant1->attributes = ($_POST['Variant'][1]);
-                        $variant2->attributes = ($_POST['Variant'][2]);
-                        $variant3->attributes = ($_POST['Variant'][3]);
-                        $variant4->attributes = ($_POST['Variant'][4]);
-                        if ($right_answer->load($this->request->post())) {
-                            switch ($right_answer->variant_id) {
-                                case 1:
-                                    $variant1->is_right = 1;
-                                    break;
-                                case 2:
-                                    $variant2->is_right = 1;
-                                    break;
-                                case 3:
-                                    $variant3->is_right = 1;
-                                    break;
-                                case 4:
-                                    $variant4->is_right = 1;
-                                    break;
+                        foreach($_POST['Variant'] as $variant){
+                            // array_push($variants, $variant);
+                            if ($variant->validate()) {
+                                if ($variant->save()) {
+                                } else {
+                                    throw new Exception('variants saving error');
+                                }
                             }
-                            // var_dump($variant2->is_right);exit;
                         }
-                        if ($variant1->validate() && $variant2->validate() && $variant3->validate() && $variant4->validate()) {
+                        $transaction->commit();
+                        return $this->redirect(['languages/'.$language->id.'/theme/update', 'id' => $theme->id]);
 
-                            if ($variant1->save() && $variant2->save() && $variant3->save() && $variant4->save()) {
-                                $transaction->commit();
-                                return $this->redirect(['languages/'.$language->id.'/theme/update', 'id' => $theme->id]);
-                            } else {
-                                throw new Exception('variants saving error');
-                            }
-                        }
+                        // $variant1->question_id = $question->id;
+                        // $variant2->question_id = $question->id;
+                        // $variant3->question_id = $question->id;
+                        // $variant4->question_id = $question->id;
+                        // $variant1->attributes = ($_POST['Variant'][1]);
+                        // $variant2->attributes = ($_POST['Variant'][2]);
+                        // $variant3->attributes = ($_POST['Variant'][3]);
+                        // $variant4->attributes = ($_POST['Variant'][4]);
+                        // if ($right_answer->load($this->request->post())) {
+                        //     switch ($right_answer->variant_id) {
+                        //         case 1:
+                        //             $variant1->is_right = 1;
+                        //             break;
+                        //         case 2:
+                        //             $variant2->is_right = 1;
+                        //             break;
+                        //         case 3:
+                        //             $variant3->is_right = 1;
+                        //             break;
+                        //         case 4:
+                        //             $variant4->is_right = 1;
+                        //             break;
+                        //     }
+                            // var_dump($variant2->is_right);exit;
+                        // }
+                        // if ($variant1->validate() && $variant2->validate() && $variant3->validate() && $variant4->validate()) {
+
+                        //     if ($variant1->save() && $variant2->save() && $variant3->save() && $variant4->save()) {
+                        //         $transaction->commit();
+                        //         return $this->redirect(['languages/'.$language->id.'/theme/update', 'id' => $theme->id]);
+                        //     } else {
+                        //         throw new Exception('variants saving error');
+                        //     }
+                        // }
                     } else {
                         throw new Exception('question saving error');
                     }
@@ -312,11 +326,12 @@ class ThemeController extends Controller
         return $this->render('create_question', [
             'question' => $question,
             'theme' => $theme,
-            'variant1' => $variant1,
-            'variant2' => $variant2,
-            'variant3' => $variant3,
-            'variant4' => $variant4,
-            'right_answer' => $right_answer,
+            // 'variant1' => $variant1,
+            // 'variant2' => $variant2,
+            // 'variant3' => $variant3,
+            // 'variant4' => $variant4,
+            'variants' => $variants,
+            // 'right_answer' => $right_answer, 
             'language' => $language,
         ]);
     }
@@ -331,70 +346,70 @@ class ThemeController extends Controller
             $question = Question::findOne(['id' => $id]);
             // var_dump($question);exit;
             $theme = Theme::findOne(['id' => $question->getThemeId()]);
-            $variants = Variant::findAll(['question_id' => $question->id]);
-            $variant1 = $variants[0];
-            $variant2 = $variants[1];
-            $variant3 = $variants[2];
-            $variant4 = $variants[3];
-            $right_answer = new RightAnswer();
-            $right_answer->variant_id = ($variant1->is_right == 1) ? $variant1->id : (($variant2->is_right == 1) ? $variant2->id : (($variant3->is_right == 1) ? $variant3->id : (($variant4->is_right == 1) ? $variant4->id : null)));
+            $variants = Variant::find()->where(['question_id' => $question->id])->asArray()->all();
+            // $variant1 = $variants[0];
+            // $variant2 = $variants[1];
+            // $variant3 = $variants[2];
+            // $variant4 = $variants[3];
+            // $right_answer = new RightAnswer();
+            // $right_answer->variant_id = ($variant1->is_right == 1) ? $variant1->id : (($variant2->is_right == 1) ? $variant2->id : (($variant3->is_right == 1) ? $variant3->id : (($variant4->is_right == 1) ? $variant4->id : null)));
 
             if ($this->request->isPost) {
                 // var_dump($_POST);
                 // exit;
-                $variant1->attributes = $_POST['Variant'][1];
-                $variant2->attributes = $_POST['Variant'][2];
-                $variant3->attributes = $_POST['Variant'][3];
-                $variant4->attributes = $_POST['Variant'][4];
-                $right_answer->attributes = $_POST['RightAnswer'];
+                // $variant1->attributes = $_POST['Variant'][1];
+                // $variant2->attributes = $_POST['Variant'][2];
+                // $variant3->attributes = $_POST['Variant'][3];
+                // $variant4->attributes = $_POST['Variant'][4];
+                // $right_answer->attributes = $_POST['RightAnswer'];
                 // var_dump($right_answer->variant_id);exit;
-                $variant1->is_right = 0;
-                $variant2->is_right = 0;
-                $variant3->is_right = 0;
-                $variant4->is_right = 0;
+                // $variant1->is_right = 0;
+                // $variant2->is_right = 0;
+                // $variant3->is_right = 0;
+                // $variant4->is_right = 0;
+                // switch ($right_answer->variant_id) {
+                //     case $variant1->id:
+                //         $variant1->is_right = 1;
+                //         break;
+                //     case $variant2->id:
+                //         $variant2->is_right = 1;
+                //         break;
+                //     case $variant3->id:
+                //         $variant3->is_right = 1;
+                //         break;
+                //     case $variant4->id:
+                //         $variant4->is_right = 1;
+                //         break;
+                // }
+                // // var_dump($variant1);exit;
+                // if (
+                //     $question->load($this->request->post()) &&
+                //     $variant1->validate() &&
+                //     $variant2->validate() &&
+                //     $variant3->validate() &&
+                //     $variant4->validate()
+                // ) {
 
-                switch ($right_answer->variant_id) {
-                    case $variant1->id:
-                        $variant1->is_right = 1;
-                        break;
-                    case $variant2->id:
-                        $variant2->is_right = 1;
-                        break;
-                    case $variant3->id:
-                        $variant3->is_right = 1;
-                        break;
-                    case $variant4->id:
-                        $variant4->is_right = 1;
-                        break;
-                }
-                // var_dump($variant1);exit;
-                if (
-                    $question->load($this->request->post()) &&
-                    $variant1->validate() &&
-                    $variant2->validate() &&
-                    $variant3->validate() &&
-                    $variant4->validate()
-                ) {
-
-                    if (
-                        $question->save() &&
-                        $variant1->save() &&
-                        $variant2->save() &&
-                        $variant3->save() &&
-                        $variant4->save()
-                    ) {
-                        return $this->redirect(['languages/'.$language->id.'/theme/update', 'id' => $theme->id]);
-                    }
-                }
+                //     if (
+                //         $question->save() &&
+                //         $variant1->save() &&
+                //         $variant2->save() &&
+                //         $variant3->save() &&
+                //         $variant4->save()
+                //     ) {
+                //         return $this->redirect(['languages/'.$language->id.'/theme/update', 'id' => $theme->id]);
+                //     }
+                // }
             }
 
             return $this->render('update_question', [
                 'question' => $question,
-                'variant1' => $variant1,
-                'variant2' => $variant2,
-                'variant3' => $variant3,
-                'variant4' => $variant4,
-                'right_answer' => $right_answer,
+                // 'variant1' => $variant1,
+                // 'variant2' => $variant2,
+                // 'variant3' => $variant3,
+                // 'variant4' => $variant4,
+                // 'right_answer' => $right_answer,
+                'variants' => $variants,
                 'theme' => $theme,
                 'language' => $language,
             ]);
