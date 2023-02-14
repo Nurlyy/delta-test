@@ -27,11 +27,11 @@ use yii\bootstrap5\ActiveForm;
 
         <div class="question-form">
 
-            <form id="w0">
+            
                 <input type="hidden" name="_csrf-backend" value="<?= Yii::$app->request->csrfToken ?>">
                 <div class="mb-3 field-question-title required">
                     <label class="form-label" for="question-title">Текст вопроса</label>
-                    <textarea id="question-title" class="form-control" name="Question[title]" rows="6" aria-required="true"></textarea>
+                    <textarea id="question-title" class="form-control" name="Question[title]" rows="6"  aria-required="true"><?= $question['title'] ?></textarea>
 
                     <div class="invalid-feedback"></div>
                 </div> <br>
@@ -72,7 +72,7 @@ use yii\bootstrap5\ActiveForm;
                     <button type="submit" class="btn btn-primary" id="btn_save">Save</button>
                 </div>
 
-            </form>
+            
         </div>
     </div>
 
@@ -99,10 +99,18 @@ use yii\bootstrap5\ActiveForm;
         console.log(variants);
         
         $('#btn_save').click(function(){
+            send_data = {};
+            send_data['Variant'] = [];
+            for (variant in variants) {
+                send_data['Variant'][variant] = variants[variant];
+            }
+            send_data['Question'] = ".json_encode($question).";
+            send_data['Question']['title'] = $('#question-title').val();
+            console.log(send_data);
             $.ajax({
                 url: window.location.href,
                 type: 'POST',
-                data: {variants, '_csrf-backend': '".Yii::$app->request->csrfToken."'},
+                data: {'Variant': send_data['Variant'], 'Question': send_data['Question'], '_csrf-backend': '".Yii::$app->request->csrfToken."'},
                 success: function(data) {
                     console.log(data);
                     console.log('success');

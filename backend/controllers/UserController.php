@@ -142,8 +142,8 @@ class UserController extends Controller
             $model->email = $_POST['User']['email'];
             $model->username = $_POST['User']['username'];
             $model->password = $_POST['User']['password_hash'];
-            if ($model->validate()) {
-                if ($model->save()) {
+            if ($model->validate() && $users_languages->validate()) {
+                if ($model->save() && $users_languages->save()) {
                     return $this->redirect('index');
                 }
             }
