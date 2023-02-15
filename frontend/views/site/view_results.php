@@ -41,14 +41,18 @@
             <div class="card" style="width: 90%; margin-left: auto; margin-right:auto;">
                 <div class="card-header <?= ($is_right_count == $is_chosen_count && $is_chosen_right) ? 'true' : 'false' ?>">
                     <h4><?= $question['title'] ?></h4>
+                    <?= ($question['code_text'] != '')?'<pre class="code_text">'. $question['code_text'] .'</pre>':'' ?>
                 </div>
                 <div class="card-body">
                     <div class="panel panel-default">
                         <div class="panel-body">
                             <?php
                             foreach ($temp_variants as $variant) { ?>
-                                <input <?= $is_right_count > 1 ? "class='form-check-input' type='checkbox'" : 'type="radio"' ?> id="variant_id" name="variant_id_<?= $question['id'] ?>" value="<?= $variant['id'] ?>" <?= ($variant['is_chosen']) ? 'checked' : '' ?> disabled>
-                                <label for="child" class="text-<?= ($variant['is_chosen'] && $variant['is_right']) ? 'success' : (($variant['is_chosen'] && !$variant['is_right']) ? 'danger' : ((!$variant['is_chosen'] && $variant['is_right']) ? 'success' : '')) ?>"><strong><?= $variant['title'] ?></strong></label><br>
+                                <label>
+                                    <input <?= $is_right_count > 1 ? "class='form-check-input' type='checkbox'" : 'type="radio"' ?> id="<?= $variant['id'] ?>" name="variant_id_<?= $question['id'] ?>" value="<?= $variant['id'] ?>" <?= ($variant['is_chosen']) ? 'checked' : '' ?> disabled>
+                                    <span class="wrappable text-<?= ($variant['is_chosen'] && $variant['is_right']) ? 'success' : (($variant['is_chosen'] && !$variant['is_right']) ? 'danger' : ((!$variant['is_chosen'] && $variant['is_right']) ? 'success' : '')) ?>"><strong><?= $variant['title'] ?></strong></span>
+                                </label>
+                                <br>
                             <?php }
                             ?>
                         </div>

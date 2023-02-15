@@ -93,7 +93,7 @@ class SiteController extends Controller
     public function actionTestPage()
     {
         $theme_id = isset($_GET['theme_id']) ? $_GET['theme_id'] : null;
-        $question_count = isset($_GET['q_count']) ? $_GET['q_count'] : 0;
+        $question_count = 0;
         if (isset($theme_id)) {
             $theme = Theme::find()->where(['id' => $theme_id])->one();
         }
@@ -103,12 +103,29 @@ class SiteController extends Controller
             array_push($temp, $answer['question_id']);
         }
         $answers = $temp;
-        $questions_count = Question::find()->where(['theme_id' => $theme_id])->count();
+        $questions_count = Question::find()->where(['theme_id' => $theme_id])->asArray()->all();
         $question = Question::find()->where(['theme_id' => $theme->id])->andWhere(['not in', 'id', $answers])->one();
-        if (!isset($question)) {
+        if (isset($question)) {
+            if(Answer::find()->where(['question_id' => $question->id, 'user_id' => Yii::$app->user->id])->one()!=null){
+                // var_dump(Answer::find()->where(['question_id' => $question->id, 'user_id' => Yii::$app->user->id])->one());exit;
+                return $this->redirect('index');
+            }
+        }
+        if($question == null){
             return $this->redirect('index');
         }
-        $issecond = ((count($answers) + 1) != $questions_count) ? 'true' : 'false';
+        $temp = [];
+        foreach($answers as $answer){
+            foreach($questions_count as $q){
+                if($answer == $q['id']){
+                    $question_count++;
+                    array_push($temp, $answer);
+                    continue 2;
+                }
+            }
+        }
+        $answers = $temp;
+        $issecond = ((count($answers) + 1) == count($questions_count)) ? 'false' : 'true';
         $variants = Variant::find()->where(['question_id' => $question->id])->all();
 
         $this->layout = 'main';
@@ -127,6 +144,9 @@ class SiteController extends Controller
         if ($this->request->isPost) {
             $question_id = isset($_POST['question_id']) ? $_POST['question_id'] : null;
             $variants_id = isset($_POST['variants_id']) ? $_POST['variants_id'] : null;
+            if(Answer::find()->where(['question_id' => $question_id, 'user_id' => Yii::$app->user->id])->one()!=null){
+                return $this->redirect('index');
+            }
             try {
                 $transaction = Yii::$app->db->beginTransaction();
                 foreach ($variants_id as $variant_id) {

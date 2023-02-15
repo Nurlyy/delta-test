@@ -248,6 +248,7 @@ class ThemeController extends Controller
             try {
                 $transaction = \Yii::$app->db->beginTransaction();
                 if ($question->load($this->request->post())) {
+                    $question->code_text = htmlentities($question->code_text);
                     $question->theme_id = $theme->id;
                     if ($question->save()) {
                         foreach($_POST['Variant'] as $variant){
@@ -293,11 +294,11 @@ class ThemeController extends Controller
     }
 
 
-    public function actionUpdateQuestion($id, $language_id)
+    public function actionUpdateQuestion($question_id, $language_id)
     {
         $language = Languages::find()->where(['id' => $language_id])->one();
-        if ($id !== null) {
-            $question = Question::find()->where(['id' => $id])->one();
+        if ($question_id !== null) {
+            $question = Question::find()->where(['id' => $question_id])->one();
             $theme = Theme::findOne(['id' => $question->getThemeId()]);
             $variants = Variant::find()->where(['question_id' => $question->id])->asArray()->all();
             if ($this->request->isPost) {

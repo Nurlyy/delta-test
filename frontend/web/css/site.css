@@ -125,7 +125,7 @@ a.desc:after {
     font-family: 'Prompt';
     margin-top:10px;
     margin-bottom:25px; 
-    font-style:bold;
+    /* font-style:bold; */
     font-size:60px;
     text-align: center;
 }
@@ -134,7 +134,7 @@ a.desc:after {
     font-family: 'Prompt';
     margin-top:10px;
     margin-bottom:25px; 
-    font-style:bold;
+    /* font-style:bold; */
     font-size:60px;
     text-align: center;
     color:white;
@@ -160,4 +160,28 @@ a.desc:after {
 
 .false {
     background-color: #facfcc !important;
+}
+
+pre {
+    background-color: rgb(48, 48, 48) !important;
+    color:white !important;
+    padding:15px;
+    /* width:fit-content; */
+    border-radius: 5px;
+}
+
+code {
+    background-color: rgb(48, 48, 48) !important;
+    color:white !important;
+    padding:5px;
+    width:fit-content;
+    border-radius: 5px;
+}
+
+label {
+    white-space:nowrap;
+}
+
+.wrappable {
+    white-space:normal;
 }

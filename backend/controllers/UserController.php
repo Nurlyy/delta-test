@@ -179,6 +179,33 @@ class UserController extends Controller
     }
 
 
+    // public function actionViewResults()
+    // {
+    //     $theme_id = $_GET['theme_id'];
+    //     $theme = Theme::find()->where(['id' => $theme_id])->one();
+    //     $user_id = $_GET['user_id'];
+    //     $user = User::find()->where(['id' => $user_id])->one();
+    //     $questions = Question::find()->where(['theme_id' => $theme_id])->asArray()->all();
+    //     $answers = [];
+    //     // $right_answers = [];
+    //     $variants = [];
+    //     foreach ($questions as $question) {
+    //         // array_push($right_answers, RightAnswer::find()->where(['question_id' => $question['id']])->one());
+    //         array_push($variants, Variant::find()->where(['question_id' => $question['id']])->asArray()->all());
+    //         array_push($answers, Answer::find()->where(['user_id' => $user->id, 'question_id' => $question['id']])->asArray()->all()[0]);
+    //         // var_dump($variants);
+    //     }
+    //     // var_dump($answers[0]);exit;
+    //     return $this->render('view_results', [
+    //         'theme' => $theme,
+    //         'user' => $user,
+    //         'questions' => $questions,
+    //         'variants' => $variants,
+    //         'answers' => $answers,
+    //         // 'right_answers' => $right_answers,
+    //     ]);
+    // }
+
     public function actionViewResults()
     {
         $theme_id = $_GET['theme_id'];
@@ -187,22 +214,23 @@ class UserController extends Controller
         $user = User::find()->where(['id' => $user_id])->one();
         $questions = Question::find()->where(['theme_id' => $theme_id])->asArray()->all();
         $answers = [];
-        $right_answers = [];
+        // $right_answers = [];
         $variants = [];
         foreach ($questions as $question) {
-            array_push($right_answers, RightAnswer::find()->where(['question_id' => $question['id']])->one());
+            // array_push($right_answers, RightAnswer::find()->where(['question_id'=>$question['id']])->one());
+            array_push($answers, Answer::find()->where(['user_id' => $user->id])->andWhere(['question_id' => $question['id']])->asArray()->all());
             array_push($variants, Variant::find()->where(['question_id' => $question['id']])->asArray()->all());
-            array_push($answers, Answer::find()->where(['user_id' => $user->id, 'question_id' => $question['id']])->asArray()->all()[0]);
             // var_dump($variants);
         }
-        // var_dump($answers[0]);exit;
+        if ($answers[0] == null) {
+            return $this->redirect('index');
+        }
         return $this->render('view_results', [
-            'theme' => $theme,
-            'user' => $user,
+            'theme_id' => $theme_id,
             'questions' => $questions,
-            'variants' => $variants,
             'answers' => $answers,
-            'right_answers' => $right_answers,
+            'variants' => $variants,
+            'theme' => $theme,
         ]);
     }
 

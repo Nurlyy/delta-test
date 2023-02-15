@@ -15,12 +15,17 @@ foreach($variants as $variant){
             <div class="card">
                 <div class="card-header">
                     <h4><?= $question->title ?></h4>
+                    <?= ($question->code_text != '')?'<pre class="code_text">'. $question->code_text .'</pre>':'' ?>
                 </div>
                 <div class="panel panel-default">
                     <div class="panel-body" style=" padding:10px;">
                         <?php foreach ($variants as $variant) { ?>
-                            <input <?= $is_right_count > 1 ? "class='form-check-input' type='checkbox'" : 'type="radio"' ?> onclick="document.getElementById('submitbutton').disabled=false;" id="variant_id" name="variant_id" value="<?= $variant->id ?>" required>
-                            <label for="child"><?= $variant->title ?></label><br>
+                            <label>
+                                <input <?= $is_right_count > 1 ? "class='form-check-input' type='checkbox'" : 'type="radio"' ?> onclick="document.getElementById('submitbutton').disabled=false;" id="variant_id" name="variant_id" value="<?= $variant->id ?>" required>
+                                <span class="wrappable"><?= $variant->title ?></span>
+                            </label>
+                            <br>
+                            <!-- <label for="child"></label> -->
                         <?php } ?>
                     </div>
                 </div>
@@ -28,7 +33,7 @@ foreach($variants as $variant){
         </div>
     </div>
 
-    <button disabled id="submitbutton" style="position:relative; text-align:center; width:20%; margin-left:auto; margin-right:auto; margin-top:30px;" class="btn btn-primary"><?= ($issecond == 'true') ? 'Следующий' : 'Завершить тест' ?></button>
+    <button disabled id="submitbutton" style="position:relative; text-align:center; width:20%; margin-left:auto; margin-right:auto; margin-top:30px;" class="btn btn-<?= ($issecond == 'true') ? 'primary' : 'success' ?>"><?= ($issecond == 'true') ? 'Следующий' : 'Завершить тест' ?></button>
 
 </div>
 
@@ -56,7 +61,7 @@ foreach($variants as $variant){
                 if (data == '1') {
                     console.log(data);
                     if(issecond){
-                        window.location.href = '/site/test-page?theme_id=" . $theme->id . "&q_count=" . $question_count + 1 . "';
+                        window.location.href = '/site/test-page?theme_id=" . $theme->id . "';
                     } else {
                         window.location.href = '/site/index';
                     }
@@ -67,5 +72,8 @@ foreach($variants as $variant){
         });
     });
 
+    function disableBack() { window.history.forward(); }
+    setTimeout(disableBack(), 0);
+    window.onunload = function () { null };
     
 ") ?>

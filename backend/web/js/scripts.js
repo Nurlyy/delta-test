@@ -4,7 +4,7 @@ function createVariant(counter, is_new = false, id = null){
     }else{
         variants[counter] = {id: id, title: $(`#new_variant-${counter}`).val(), is_right: document.getElementById(`cb_new_variant-${counter}`).checked};
     }
-    console.log(variants);
+    // console.log(variants);
 }
 
 function on_create(variants){
@@ -18,7 +18,7 @@ function on_create(variants){
         counter += 1;   
     }else{
         for (variant in variants) {
-            console.log(variants[variant].is_right==1);
+            // console.log(variants[variant].is_right==1);
             $('.variants').append(`
                 <div class='mb-3 field-variant required'>
                     <label class='form-label' style='float:left;' for='new_variant-`+counter+`'>`+(Number(counter)+1)+`)</label>
@@ -27,7 +27,7 @@ function on_create(variants){
                 </div>`);
             counter += 1;  
         }
-        console.log('array not empty');    
+        // console.log('array not empty');    
     }
 }
 

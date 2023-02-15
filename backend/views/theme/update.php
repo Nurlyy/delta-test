@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = 'Изменить '.$model->name;
                 'class' => ActionColumn::class,
                 'template' => '{update} {delete}',
                 'urlCreator' => function ($action, Question $model, $key, $index, $column) {
-                    return Url::toRoute(['languages/'.Theme::find()->where(['id' => $model->theme_id])->one()->language_id.'/theme/'.$action.'-question', 'id' => $model->id]);
+                    return Url::toRoute(['languages/'.Theme::find()->where(['id' => $model->theme_id])->one()->language_id.'/theme/'.$model->theme_id."/".$action.'-question/'.$model->id]);
                 }
             ],
         ],

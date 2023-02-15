@@ -119,3 +119,38 @@ a.desc:after {
 .button:hover {  
     background-color:#45a049;  	
 }
+
+.card {
+    width: 90%; 
+    margin-left: auto; 
+    margin-right:auto;
+    /* background-color: #dcf5ff; */
+}
+
+.card-header {
+    background-color: #c9e1eb;
+}
+
+.true {
+    background-color: #ccfae7 !important;
+}
+
+.false {
+    background-color: #facfcc !important;
+}
+
+pre {
+    background-color: rgb(48, 48, 48) !important;
+    color:white !important;
+    padding:15px;
+    /* width:fit-content; */
+    border-radius: 5px;
+}
+
+code {
+    background-color: rgb(48, 48, 48) !important;
+    color:white !important;
+    padding:5px;
+    width:fit-content;
+    border-radius: 5px;
+}

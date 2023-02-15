@@ -35,6 +35,12 @@ use yii\bootstrap5\ActiveForm;
 
                     <div class="invalid-feedback"></div>
                 </div> <br>
+                <div class="mb-3 field-question-code_text required">
+                    <label class="form-label" for="question-code_text">Код для вопроса (если есть)</label>
+                    <textarea id="question-code_text" class="form-control code_text" name="Question[code_text]" rows="6"  aria-required="true"><?= $question['code_text'] ?></textarea>
+
+                    <div class="invalid-feedback"></div>
+                </div> <br>
                 <div class="mb-3 field-question-theme_id required">
                     <label class="form-label" for="question-theme_id">Название темы</label>
                     <select id="question-theme_id" class="form-select" name="Question[theme_id]" aria-required="true">
@@ -82,21 +88,73 @@ use yii\bootstrap5\ActiveForm;
 
 <?php $this->registerJs("
 
-    
+    HTMLTextAreaElement.prototype.getCaretPosition = function () { //return the caret position of the textarea
+        return this.selectionStart;
+    };
+    HTMLTextAreaElement.prototype.setCaretPosition = function (position) { //change the caret position of the textarea
+        this.selectionStart = position;
+        this.selectionEnd = position;
+        this.focus();
+    };
+    HTMLTextAreaElement.prototype.hasSelection = function () { //if the textarea has selection then return true
+        if (this.selectionStart == this.selectionEnd) {
+            return false;
+        } else {
+            return true;
+        }
+    };
+    HTMLTextAreaElement.prototype.getSelectedText = function () { //return the selection text
+        return this.value.substring(this.selectionStart, this.selectionEnd);
+    };
+    HTMLTextAreaElement.prototype.setSelection = function (start, end) { //change the selection area of the textarea
+        this.selectionStart = start;
+        this.selectionEnd = end;
+        this.focus();
+    };
+
+    var textarea = document.getElementsByTagName('textarea')[1]; 
+
+    textarea.onkeydown = function(event) {
+        
+        //support tab on textarea
+        if (event.keyCode == 9) { //tab was pressed
+            var newCaretPosition;
+            newCaretPosition = textarea.getCaretPosition() + '    '.length;
+            textarea.value = textarea.value.substring(0, textarea.getCaretPosition()) + '    ' + textarea.value.substring(textarea.getCaretPosition(), textarea.value.length);
+            textarea.setCaretPosition(newCaretPosition);
+            return false;
+        }
+        if(event.keyCode == 8){ //backspace
+            if (textarea.value.substring(textarea.getCaretPosition() - 4, textarea.getCaretPosition()) == '    ') { //it's a tab space
+                var newCaretPosition;
+                newCaretPosition = textarea.getCaretPosition() - 3;
+                textarea.value = textarea.value.substring(0, textarea.getCaretPosition() - 3) + textarea.value.substring(textarea.getCaretPosition(), textarea.value.length);
+                textarea.setCaretPosition(newCaretPosition);
+            }
+        }
+        if(event.keyCode == 37){ //left arrow
+            var newCaretPosition;
+            if (textarea.value.substring(textarea.getCaretPosition() - 4, textarea.getCaretPosition()) == '    ') { //it's a tab space
+                newCaretPosition = textarea.getCaretPosition() - 3;
+                textarea.setCaretPosition(newCaretPosition);
+            }    
+        }
+        if(event.keyCode == 39){ //right arrow
+            var newCaretPosition;
+            if (textarea.value.substring(textarea.getCaretPosition() + 4, textarea.getCaretPosition()) == '    ') { //it's a tab space
+                newCaretPosition = textarea.getCaretPosition() + 3;
+                textarea.setCaretPosition(newCaretPosition);
+            }
+        } 
+    }
 
     $(document).ready(function(){
         
         counter = 0;
         variants = " . json_encode($variants) . ";
-        console.log(variants);
 
         on_create(variants);
 
-        
-
-        
-
-        console.log(variants);
         
         $('#btn_save').click(function(){
             send_data = {};
@@ -106,6 +164,7 @@ use yii\bootstrap5\ActiveForm;
             }
             send_data['Question'] = ".json_encode($question).";
             send_data['Question']['title'] = $('#question-title').val();
+            send_data['Question']['code_text'] = $('#question-code_text').val();
             console.log(send_data);
             $.ajax({
                 url: window.location.href,
@@ -117,6 +176,8 @@ use yii\bootstrap5\ActiveForm;
                 }
             });
         });
+
+        
         
 
     });

@@ -1,5 +1,6 @@
 <?php $count_questions = [];
 $count_answers = [];
+$right_answers = [];
 $unfinished_themes = 0;
 $finished_themes = 0;
 foreach ($themes as $theme) {
@@ -10,6 +11,8 @@ foreach ($themes as $theme) {
             $count_questions[$theme['id']] = isset($count_questions[$theme['id']]) ? $count_questions[$theme['id']] + 1 : 1;
             foreach ($answers as $answer) {
                 if ($answer['question_id'] == $question['id']) {
+                    // var_dump($answer['is_right']);exit;
+                    if($answer['is_right'] == 1 ){$right_answers[$theme['id']] = isset($right_answers[$theme['id']]) ? $right_answers[$theme['id']] + 1 : 1;}
                     $count_answers[$theme['id']] = isset($count_answers[$theme['id']]) ? $count_answers[$theme['id']] + 1 : 1;
                     continue 2;
                 }
@@ -25,13 +28,14 @@ foreach ($themes as $theme) {
     if ($count_answers[$theme['id']] == $count_questions[$theme['id']]) {
         $finished_themes++;
     }
+    // var_dump($right_answers);exit;
 }
 
 ?>
 <div class="site-index">
 
     <div class="row col-12">
-        <h1 class="title-text" style="margin-top:10px;margin-bottom:25px; font-style:bold;font-size:60px;" class="text-center">Delta <span>Testing</span></h1>
+        <h1 class="title-text" style="margin-top:10px;margin-bottom:25px; font-size:60px;" class="text-center">Delta <span>Testing</span></h1>
         <div class="panel panel-default">
             <div class="panel-body">
                 <?php
@@ -90,6 +94,9 @@ foreach ($themes as $theme) {
                                                     } ?>
                                                 </a>
                                             </button>
+                                            <div style="float:right; position:relative; margin-right:30px;" class="btn btn-success">
+                                                <?= $right_answers[$theme['id']] ?>/<?= $count_questions[$theme['id']] ?>
+                                            </div>
                                             <div style="float:right; position:relative; margin-right:30px;" class="btn btn-warning">
                                                 <?= $count_answers[$theme['id']] ?>/<?= $count_questions[$theme['id']] ?>
                                             </div>

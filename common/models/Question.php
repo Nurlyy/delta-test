@@ -9,6 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property string $title
+ * @property string $code_text
  * @property int $theme_id
  * @property Answer[] $answers
  * @property Variant[] $variants
@@ -30,7 +31,7 @@ class Question extends \yii\db\ActiveRecord
     {
         return [
             [['title', 'theme_id'], 'required'],
-            [['title'], 'string'],
+            [['title', 'code_text'], 'string'],
             [['theme_id'], 'integer'],
         ];
     }
@@ -44,6 +45,7 @@ class Question extends \yii\db\ActiveRecord
             'id' => 'ID',
             'title' => 'Текст вопроса',
             'theme_id' => 'Название темы',
+            'code_text' => 'Код для вопроса',
         ];
     }
 
