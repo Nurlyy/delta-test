@@ -42,28 +42,20 @@ class LanguagesController extends Controller
                     // 'only' => ['search'],
                     'rules' => [
                         [
-                            'actions' => ['search'],
-                            'allow' => true,
-                            'roles' => ['@', User::STATUS_ACTIVE],
-
+                            'allow' => false,
+                            'roles' => ['@', User::STATUS_PARTICIPANT],
                             'matchCallback' => function ($rule, $action) {
-                                return !\Yii::$app->user->identity->isAdmin();
+                                return \Yii::$app->user->identity->isParticipant();
                             },
                             'denyCallback' => function ($rule, $action) {
-                                return $this->redirect(["/site/index"]);
+                                return $this->redirect(["/site/logout"]);
                             },
-
                         ],
                         [
                             'allow' => true,
                             'roles' => ['@', User::STATUS_ADMIN],
                             // 'roles' => ['@'],
-                            'matchCallback' => function ($rule, $action) {
-                                return \Yii::$app->user->identity->isAdmin();
-                            },
-                            'denyCallback' => function ($rule, $action) {
-                                return $this->redirect(["/site/index"]);
-                            },
+                            
                         ],
                     ],
                 ]

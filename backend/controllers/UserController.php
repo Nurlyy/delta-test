@@ -41,15 +41,20 @@ class UserController extends Controller
                     // 'only' => ['search'],
                     'rules' => [
                         [
+                            'allow' => false,
+                            'roles' => ['@', User::STATUS_PARTICIPANT],
+                            'matchCallback' => function ($rule, $action) {
+                                return \Yii::$app->user->identity->isParticipant();
+                            },
+                            'denyCallback' => function ($rule, $action) {
+                                return $this->redirect(["/site/logout"]);
+                            },
+                        ],
+                        [
                             'allow' => true,
                             'roles' => ['@', User::STATUS_ADMIN],
                             // 'roles' => ['@'],
-                            'matchCallback' => function ($rule, $action) {
-                                return \Yii::$app->user->identity->isAdmin();
-                            },
-                            'denyCallback' => function ($rule, $action) {
-                                return $this->redirect(["/site/index"]);
-                            },
+                            
                         ],
                     ],
                 ]
@@ -128,7 +133,9 @@ class UserController extends Controller
             $users_languages->language_id = $_POST['UsersLanguages']['language_id'];
             $model->email = $_POST['User']['email'];
             $model->username = $_POST['User']['username'];
-            $model->password = $_POST['User']['password_hash'];
+            if($model->password_hash != $_POST['User']['password_hash']){
+                $model->password = $_POST['User']['password_hash'];
+            }
             if ($model->validate() && $users_languages->validate()) {
                 if ($model->save() && $users_languages->save()) {
                     return $this->redirect('index');
