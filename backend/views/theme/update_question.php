@@ -10,6 +10,8 @@ $this->params['breadcrumbs'][] = ['label' => 'Языки', 'url' => ['/languages
 $this->params['breadcrumbs'][] = ['label' => $language->name, 'url' => ['/languages/view/'.$language->id]];
 $this->params['breadcrumbs'][] = ['label' => 'Темы', 'url' => ['/languages/'.$language->id.'/theme']];
 $this->params['breadcrumbs'][] = ['label' => $theme->name, 'url' => ['/languages/'.$language->id.'/theme/'.$theme->id]];
+$this->params['breadcrumbs'][] = ['label' => 'Вопросы', 'url' => ['/languages/'.$language->id.'/theme/'.$theme->id.'/questions']];
+
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="question-create">

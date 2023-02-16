@@ -28,31 +28,5 @@ $this->params['breadcrumbs'][] = 'Изменить '.$model->name;
     <br>
     <br>
 
-    <h1>Вопросы</h1>
-
-    <p>
-        <?= Html::a('Создать вопрос', ['/languages/'.$language->id.'/theme/create-question', 'id' => $model->id], ['class' => 'btn btn-success']) ?>
-    </p>
-
-    <?php Pjax::begin(); ?>
-
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'title:ntext',
-            
-            [
-                'class' => ActionColumn::class,
-                'template' => '{update} {delete}',
-                'urlCreator' => function ($action, Question $model, $key, $index, $column) {
-                    return Url::toRoute(['languages/'.Theme::find()->where(['id' => $model->theme_id])->one()->language_id.'/theme/'.$model->theme_id."/".$action.'-question/'.$model->id]);
-                }
-            ],
-        ],
-    ]); ?>
-
-    <?php Pjax::end(); ?>
 
 </div>

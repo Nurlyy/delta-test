@@ -12,7 +12,9 @@ use yii\widgets\Pjax;
 $this->title = 'Темы';
 $this->params['breadcrumbs'][] = ['label' => 'Языки', 'url' => ['/languages']];
 $this->params['breadcrumbs'][] = ['label' => $language->name, 'url' => ['/languages/view/'.$language->id]];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => 'Темы', 'url' => ['/languages/'.$language->id.'/theme']];
+$this->params['breadcrumbs'][] = ['label' => $theme->name, 'url' => ['/languages/'.$language->id.'/theme/'.$theme->id]];
+$this->params['breadcrumbs'][] = 'Вопросы';
 ?>
 <div class="theme-index">
 
@@ -22,25 +24,24 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card">
 
             <div class="text-center mt-4 mb-4">
-                <h1><?= Html::encode($this->title) ?> языка <?= Html::encode($language->name) ?></h1>
+                <h1>Вопросы темы <?= Html::encode($theme->name) ?></h1>
             </div>
             <div class="card-body">
                 <div class="card mb-3">
                     <div class="card-body create-language text-center">
                         <h3>
-                        <?= Html::a('<strong>Создать новую тему</strong>', ['/languages/'.$language->id."/theme/".'create'], ['class' => 'btn']) ?>
+                        <?= Html::a('<strong>Создать новый вопрос</strong>', ['/languages/'.$language->id."/theme/".$theme->id.'/create-question'], ['class' => 'btn']) ?>
                         </h3>
                     </div>
                 </div>
 
-                <?php foreach ($themes as $theme) { ?>
+                <?php foreach ($questions as $question) { ?>
                     <div class="card language-item mb-3">
                         <div class="card-header" style="position:relative;">
-                            <?= $theme->name ?>
+                            <?= $question->title ?>
                             <div style="float:right; position:relative;">
-                                <div class="btn btn-primary " style="float:right; position:relative;"><a class="btn-a" href="/backend/languages/<?= $language->id ?>/theme/<?= $theme->id ?>/questions">Вопросы</a></div>
-                                <div class="btn btn-warning " style="float:right; position:relative;margin-right:50px;"><a class="btn-a" href="/backend/languages/<?= $language->id ?>/theme/<?= $theme->id ?>update">Изменить</a></div>
-                                <div class="btn btn-danger " style="float:right; position:relative;margin-right:50px;"><a class="btn-a" href="/backend/languages/<?= $language->id ?>/theme/<?= $theme->id ?>/delete">Удалить</a></div>
+                                <div class="btn btn-warning " style="float:right; position:relative;margin-right:50px;"><a class="btn-a" href="/backend/languages/<?= $language->id ?>/theme/<?= $theme->id ?>/update-question/<?= $question->id ?>">Изменить</a></div>
+                                <div class="btn btn-danger " style="float:right; position:relative;margin-right:50px;"><a class="btn-a" href="/backend/languages/<?= $language->id ?>/theme/<?= $theme->id ?>/delete-question/<?= $question->id ?>">Удалить</a></div>
                             </div>
                             
                         </div>
@@ -51,6 +52,5 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
 
     </div>
-
 
 </div>

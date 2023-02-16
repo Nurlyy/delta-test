@@ -76,6 +76,7 @@ class ThemeController extends Controller
     public function actionIndex($language_id)
     {
         $language = Languages::find()->where(['id' => $language_id])->one();
+        $themes = Theme::find()->where(['language_id' => $language->id])->all();
         $dataProvider = new ActiveDataProvider([
             'query' => Theme::find()->where(['language_id' => $language_id]),
             /*
@@ -93,6 +94,7 @@ class ThemeController extends Controller
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'language' => $language,
+            'themes' => $themes,
         ]);
     }
 
@@ -172,6 +174,19 @@ class ThemeController extends Controller
             'model' => $model,
             'dataProvider' => $dataProvider,
             'language' => $language,
+        ]);
+    }
+
+    public function actionQuestions($id, $language_id){
+        $language = Languages::find()->where(['id' => $language_id])->one();
+        $theme = Theme::find()->where(['id' => $id])->one();
+
+        $questions = Question::find()->where(['theme_id' => $id])->all();
+
+        return $this->render('questions', [
+            'language' => $language,
+            'theme' => $theme,
+            'questions' => $questions,
         ]);
     }
 
@@ -274,7 +289,7 @@ class ThemeController extends Controller
                             }
                         }
                         $transaction->commit();
-                        return $this->redirect(['languages/'.$language->id.'/theme/update', 'id' => $theme->id]);
+                        return $this->redirect(['languages/'.$language->id.'/theme/'.$theme->id.'/questions']);
                     } else {
                         throw new Exception('question saving error');
                     }

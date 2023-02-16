@@ -70,6 +70,7 @@ class LanguagesController extends Controller
      */
     public function actionIndex()
     {
+        $languages = Languages::find()->all();
         $dataProvider = new ActiveDataProvider([
             'query' => Languages::find(),
             /*
@@ -86,6 +87,7 @@ class LanguagesController extends Controller
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
+            'languages' => $languages,
         ]);
     }
 

@@ -154,3 +154,21 @@ code {
     width:fit-content;
     border-radius: 5px;
 }
+
+.language-item {
+    background-color: #badcff;
+}
+
+.language-item .card-header {
+    background-color: #badcff;
+    
+}
+
+.create-language {
+    background-color:#6de0a3
+}
+
+.btn-a{
+    text-decoration: none;
+    color:white;
+}
