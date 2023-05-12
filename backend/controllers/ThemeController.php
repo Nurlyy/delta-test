@@ -333,7 +333,7 @@ class ThemeController extends Controller
                                     $temp = new Variant();
                                 }
                                 $temp->question_id = $question->id;
-                                $temp->title = $variant['title'];
+                                $temp->title = htmlentities($variant['title']);
                                 $temp->is_right = $variant['is_right'];
                                 if ($temp->validate()) {
                                     if ($temp->save()) {
@@ -347,7 +347,7 @@ class ThemeController extends Controller
                                 }
                             }
                             $transaction->commit();
-                            return $this->redirect(['languages/'.$language->id.'/theme/update', 'id' => $theme->id]);
+                            return $this->redirect(['languages/'.$language->id.'/theme/'.$theme->id.'/questions/']);
                         } else {
                             var_dump('question error');
                             throw new Exception('question saving error');

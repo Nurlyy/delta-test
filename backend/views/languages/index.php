@@ -41,8 +41,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= $language->name ?>
                             <div style="float:right; position:relative;">
                                 <div class="btn btn-primary " style="float:right; position:relative;"><a class="btn-a" href="/backend/languages/<?= $language->id ?>/theme">Темы</a></div>
-                                <div class="btn btn-warning " style="float:right; position:relative;margin-right:50px;"><a class="btn-a" href="languages/<?= $language->id ?>/update">Изменить</a></div>
-                                <div class="btn btn-danger " style="float:right; position:relative;margin-right:50px;"><a class="btn-a" href="languages/<?= $language->id ?>/delete">Удалить</a></div>
+                                <div class="btn btn-warning " style="float:right; position:relative;margin-right:50px;"><a class="btn-a" href="/backend/languages/<?= $language->id ?>/update">Изменить</a></div>
+                                <div class="btn btn-danger " style="float:right; position:relative;margin-right:50px;"><a class="btn-a" href="/backend/languages/<?= $language->id ?>/delete">Удалить</a></div>
                             </div>
                             
                         </div>
