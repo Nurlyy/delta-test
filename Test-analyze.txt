@@ -1,0 +1,101 @@
+1. Какое из следующих выражений используется для загрузки данных из CSV-файла в pandas?
+* pd.read_excel('file.csv')
+* +pd.read_csv('file.csv')
+* pd.load_csv('file.csv')
+* df.read_csv('file.csv')
+2. С каким аргументом метода loc() выбираются все строки в DataFrame?
+* ,
+* all
+* rows
+* +:
+3. Какой метод используется для удаления столбца из DataFrame?
+* +drop()
+* remove()
+* delete()
+* truncate()
+4. Какое из следующих утверждений верно относительно функции groupby()?
+* Сортирует DataFrame по заданным оси
+* Применяет функцию к каждому элементу Series
+* Применяет функцию к каждому элементу DataFrame
+* +Объединяет объекты в логические группы на основе заданных критериев
+5. Какое из следующих утверждений верно для функции value_counts()?
+* Возвращает сумму элементов в столбце
+* Возвращает количество нулевых элементов в столбце
+* +Возвращает количество уникальных элементов в столбце
+* Возвращает среднее значение по каждому столбцу
+6. Выберите правильный код для добавления столбца в DataFrame:
+* df.addColumn('col_name', [1, 2, 3])
+* +df['col_name'] = [1, 2, 3]
+* df.addCol(['col_name', [1, 2, 3]])
+* df.col('col_name', [1, 2, 3])
+7. Каким методом можно выбрать все строки DataFrame, где 
+значение в указанном столбце больше, чем определенное число?
+* df.select(df['column_name'] > value)
+* df.filter(df['column_name'] > value)
+* +df[df['column_name'] > value]
+* df[df['column_name'] < value]
+8. Какая функция используется для перевода DataFrame в CSV-файл?
+* df.write_csv('file.csv')
+* +df.to_csv('file.csv')
+* df.export_csv('file.csv')
+* df » 'file.csv'
+9. Каким методом можно сгруппировать данные в DataFrame по нескольким столбцам одновременно?
+* group(by=['column1', 'column2'])
+* +groupby(['column1', 'column2'])
+* merge(['column1', 'column2'])
+* order(by=['column1', 'column2'])
+10. Каким методом можно применить функцию к столбцу DataFrame?
+* +apply()
+* use()
+* call()
+* exec()
+11. Какой метод выбирает все строки и только столбцы с указанными именами в DataFrame?
+* +loc()
+* iloc()
+* ix()
+* idx()
+12. Как создать массив NumPy с элементами, равными 0?
+* np.ones(0)
+* np.array(0)
+* np.arrange()
+* +np.zeros(10)
+13. Как создать единичную матрицу размера 5x5 в NumPy?
+* np.identity(5, 5)
+* +np.identity(5)
+* np.ones((5, 5))
+* np.zeros(5)
+14. Как создать последовательность чисел от 0 до 9 в виде массива NumPy?
+* np.range(0, 10)
+* +np.arange(0, 10)
+* np.linspace(0, 9, 10)
+* такой функции не существует
+15. Дан массив NumPy [1, 2, 3, 4, 5]. Как выбрать первые 3 элемента?
+* +array[0:3]
+* array[-3:]
+* array[1:3]
+* array[:]
+16. Даны массивы array1 = [1, 2, 3] и array2 = [4, 5, 6]. Как объединить их в один массив?
+* np.where(array1, array2)
+* np.add(array1, array2)
+* +np.concatenate([array1, array2])
+* np.reshape([array1, array2])
+17. Как перевернуть массив NumPy?
+* array.revert()
+* np.revert()
+* np.invert(array)
+* +np.flip(array)
+18. Какой метод используется для нахождения минимального элемента в массиве NumPy?
+* +np.min()
+* np.minimum()
+* np.extractmin()
+* np.max()
+19. Как получить срез элементов массива NumPy, начиная с элемента с индексом 2 и заканчивая элементом с индексом 5?
+* array[2:6]
+* +array[2:5]
+* array[1:4]
+* array[2,5]
+20. Какой метод используется для нахождения максимального элемента в массиве NumPy?
+* +np.max()
+* np.maximum()
+* np.extractmax()
+* np.execmax()

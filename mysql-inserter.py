@@ -1,4 +1,5 @@
 import mysql.connector
+import html
 
 connection = mysql.connector.connect(
     user='root', password='', host='localhost', database='delta-test', port=3306
@@ -6,7 +7,7 @@ connection = mysql.connector.connect(
 
 cursor = connection.cursor()
 
-with open('Test.txt', errors='ignore', encoding='utf-8') as f:
+with open('Test-analyze.txt', errors='ignore', encoding='utf-8') as f:
     lines = f.readlines()
 
 themes = {}
@@ -49,39 +50,39 @@ for line in lines:
 
 # print(temp)
 
-
+theme_id = 26
 
 try:
-    # query = f'SELECT * FROM theme;'
-    query = f'SELECT * FROM question where theme_id=22;'
-    cursor.execute(query)
-    # themes = cursor.fetchall()
-    questions_query = cursor.fetchall()
-    # for theme in themes:
     # for theme_name in temp:
-        # print(theme_name, end="\n")
-        # for questions in temp[theme_name]:
-        #     for variant in temp[theme_name][questions]:
-                    
-        #         # print('     ' + questions)
-        # query = f'INSERT INTO question (title, theme_id) VALUES ("'+theme_name+'", 22)'
-        # cursor.execute(query)
-        # print(query)
+    #     print(theme_name, end="\n")
+    #     theme_name = theme_name.replace('"', "'")
+    #     query = f'INSERT INTO question (title, theme_id) VALUES ("'+html.escape(theme_name, quote=True)+f'", {theme_id})'
+    #     cursor.execute(query)
+    #     print(query)
         
-    for question in questions_query:
-        for theme_name in temp:
-            if(question[1] == theme_name):
-                for variant in temp[theme_name]:
-                    is_right = 0
-                    if(variant[1] == '+'):
-                        is_right = 1
-                        variant = variant.replace("+", "", 1)
+    
+#--------------------------------------------------------------------------------------------------------------------
+
+
+    # query = f'SELECT * FROM question where theme_id={theme_id};'
+    # cursor.execute(query)
+    # questions_query = cursor.fetchall()
+
+    # for question in questions_query:
+    #     for theme_name in temp:
+    #         if(question[1] == theme_name.replace('"', '&#x27;').replace('<', '&lt;').replace('>', '&gt;')):
+    #             for variant in temp[theme_name]:
+    #                 is_right = 0
+    #                 if(variant[1] == '+'):
+    #                     is_right = 1
+    #                     variant = variant.replace("+", "", 1)
+    #                     variant = variant.replace('"', "'")
                     
-                    # print('     ' + questions)
-                    query = f'INSERT INTO variant (title, question_id, is_right) VALUES ("'+variant+f'", {question[0]}, {is_right})'
-                    cursor.execute(query)
-                    # print(query)
-        
+    #                 # print('     ' + questions)
+    #                 query = f'INSERT INTO variant (title, question_id, is_right) VALUES ("'+html.escape(variant, quote=True)+f'", {question[0]}, {is_right})'
+    #                 cursor.execute(query)
+    #                 print(query)
+
 
 # Commit your changes in the database
     connection.commit()

@@ -314,7 +314,7 @@ class ThemeController extends Controller
         $language = Languages::find()->where(['id' => $language_id])->one();
         if ($question_id !== null) {
             $question = Question::find()->where(['id' => $question_id])->one();
-            $theme = Theme::findOne(['id' => $question->getThemeId()]);
+            $theme = Theme::findOne(['id' => $question->theme_id]);
             $variants = Variant::find()->where(['question_id' => $question->id])->asArray()->all();
             if ($this->request->isPost) {
                 try {
@@ -372,7 +372,7 @@ class ThemeController extends Controller
     {
         $language = Languages::find()->where(['id' => $language_id])->one();
         $question = Question::findOne($id);
-        $theme = Theme::findOne(['id' => $question->getThemeId()]);
+        $theme = Theme::findOne(['id' => $question->theme_id]);
         $variants = Variant::findAll(['question_id' => $question->id]);
         $deleted = [];
         $transaction = \Yii::$app->db->beginTransaction();

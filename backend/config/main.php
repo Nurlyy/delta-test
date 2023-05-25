@@ -46,9 +46,10 @@ return [
                 'languages/<id:[\w]+>/update' => 'languages/update',
                 'languages/<id:[\w]+>/delete' => 'languages/delete',
                 'languages/<language_id:[\w]+>/theme' => 'theme',
+                'languages/<language_id:[\w]+>/theme/create' => 'theme/create',
                 'languages/<language_id:[\w]+>/theme/<id:[\w]+>' => 'theme/update',
                 'languages/<language_id:[\w]+>/theme/<id:[\w]+>/update' => 'theme/update',
-                'languages/<language_id:[\w]+>/theme/create' => 'theme/create',
+                
                 'languages/<language_id:[\w]+>/theme/<id:[\w]+>/delete' => 'theme/delete',
                 'languages/<language_id:[\w]+>/theme/<id:[\w]+>/questions' => 'theme/questions',
                 'languages/<language_id:[\w]+>/theme/<id:[\w]+>/create-question' => 'theme/create-question',

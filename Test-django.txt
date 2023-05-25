@@ -1,0 +1,75 @@
+1. Синтаксис для вставки переменных контекста, используемый в шаблонах Django?	
+* {% variable %}
+* +{{ variable }}
+* {$ variable $}
+* {& variable &}
+2. Выберите команду с помощью которой создается проект Django	
+* django-admin createproject <project_name>
+* +django-admin startproject <project_name>
+* python manage.py startproject <project_name>
+* django-admin createapp <project_name>
+3. Выберите команду с помощью которой создается приложение Django	
+* django-admin createapplication <app_name>
+* +python manage.py startapp <app_name>
+* python manage.py createapp <app_name>
+* django-admin manage.py createapp <app_name>
+4. В каком файле находится список всех установленных приложений Django?	
+* +settings.py
+* wsgi.py
+* urls.py
+* manage.py
+5. Выберите правильный пример наследования шаблона	
+* {% inherits 'template.html' %}
+* +{% extends 'template.html' %}
+* {% tempate 'template.html' %}
+* {% tagname 'template.html' %}
+6. Какой обязательный параметр должна примнимать функция обработчик?	
+* template_name
+* context
+* +request
+* model
+7. Выберите правильный вариант подключения маршрутизации приложения	
+* path('myapp', 'myapp.urls')
+* +path('myapp', include('myapp.urls'))
+* path('myapp', 'urls')
+* path('myapp', 'urls.myapp')
+8. От какого класса наследуются модели в Django?	
+* +models.Model
+* admin.Model
+* models.AdminModel
+* models.Models
+9. От каких классов наследуются формы в Django?	
+* forms.Form и forms.AdminForm
+* +froms.Form и froms.ModelForm
+* forms.Admin и forms.AdminForm
+* forms.Model и forms.ModelForm
+10. Как правильно записывается цикл for в шаблонах django?	
+* +{% for item in items %}{% endfor %}
+* {{ for item in items }}{{ endfor }}
+* {$ for item in items $}{$ endfor $}
+* {% for item in items %}{% end for %}
+11. С помощью какой записи можно вставить url путь в шаблон Django?	1. 
+* {% url 'path_name' %}
+* +{{ url 'path_name' }}
+* {$ url 'path_name' $}
+* {% path 'pathname' %}
+12. Выберите команду, которая применяет миграции к базе данных?	
+* python manage.py makemigrations
+* django-admin makemigrations
+* +python manage.py migrate
+* django-admin migrate
+13. Выберите команду, которая создает миграции (ленивые), но не применяет их?	
+* +python manage.py makemigrations
+* django-admin makemigrations
+* python manage.py migrate
+* django-admin migrate
+14. Выберите команду, которая создает суперпользователя?	
+* django-admin createadmin
+* python manage.py createadmin
+* django-admin admincreate
+* +python manage.py createsuperuser
+15. Как правильно добавить приложение в проект?	
+* INSTALLED_APPS = [..., myapp]
+* INSTALLED_APPS = [..., 'myapp']
+* INSTALLED_APPS = [..., myapp.apps.MyappConfig]
+* +INSTALLED_APPS = [..., 'myapp.apps.MyappConfig']
