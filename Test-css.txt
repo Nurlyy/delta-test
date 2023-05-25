@@ -1,0 +1,35 @@
+1. Что означает акроним CSS?
+* Creative Style Sheets
+* Computer Style Sheets
+* +Cascading Style Sheets 
+* Colorful Style Sheets
+2. Каким свойством CSS можно задать цвет текста элемента?
+* text-color
+* background-color
+* +color 
+* font-color
+3. Какое свойство CSS используется для задания ширины границы элемента?
+* padding
+* margin
+* +border-width 
+* border-style
+4. Каким свойством CSS можно задать высоту элемента?
+* +height 
+* width
+* size
+* length
+5. Какое свойство CSS используется для задания выравнивания текста в элементе?
+* +text-align 
+* align-text
+* text-style
+* align-content
+6. Какой селектор CSS используется для выбора всех элементов на странице?
+* #
+* .
+* $
+* + * 
+7. Какой селектор CSS используется для выбора элементов по их классу?
+* #
+* $
+* *
+* + . 

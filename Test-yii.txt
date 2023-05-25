@@ -1,0 +1,89 @@
+1. Что означает акроним "Yii" в Yii2 framework?
+* +Yes, It Is!
+* Your Ideal Internet
+* Your Incredible Invention
+* Yii Is It!
+
+2. Какая команда используется для создания нового проекта в Yii2 framework через командную строку?
+* composer new-project
+* php yii new
+* +composer create-project 
+* php yii create
+
+3. Какая структура каталогов используется в Yii2 для организации кода приложения?
+* +Model-View-Controller (MV*
+* Object-Relational Mapping (ORM)
+* Model-View-ViewModel (MVVM)
+* Ни один из вариантов
+
+4. Как создать новый контроллер в Yii2 framework?
+* +Создать новый файл с классом контроллера 
+* Использовать команду yii create-controller
+* Изменить файл конфигурации приложения
+* Установить пакет через Composer 
+
+5. Какой файл отвечает за конфигурацию приложения в Yii2 framework?
+* app.php
+* config.php
+* +main.php 
+* settings.ini
+
+6. Что такое "модель" в Yii2 framework?
+* +Класс, представляющий таблицу базы данных или другие данные 
+* Шаблон представления
+* Контроллер
+* Компонент приложения
+
+7. Какая команда используется для применения миграций в Yii2?
+* +`yii migrate`
+* `yii apply-migrations`
+* `yii run-migrations`
+* Ни один из вариантов
+
+8. Какой метод модели Yii2 framework отвечает за валидацию данных?
+* validate()
+* rules()
+* validateData()
+* +rules() 
+
+9. Какой класс является базовым классом для контроллеров в Yii2?
+* `yii\base\Controller`
+* +`yii\web\Controller`
+* `yii\base\Object`
+* `yii\web\Application`
+
+10. Какая команда используется для запуска веб-сервера разработки в Yii2?
+* `yii server`
+* `yii start`
+* +`yii serve`
+* Ни один из вариантов
+
+11. Какой метод контроллера Yii2 framework отвечает за рендеринг представления?
+* render()
+* renderView()
+* renderPage()
+* +render() 
+
+12. Какой класс используется для создания формы в Yii2 framework?
+* yii\widgets\Form
+* yii\widgets\CreateForm
+* +yii\widgets\ActiveForm 
+* yii\widgets\FormWidget
+
+13. Что такое виджеты (widgets) в Yii2 framework?
+* +Компоненты, используемые для отображения частей пользовательского интерфейса 
+* Файлы со стилями CSS
+* Скрипты JavaScript для добавления функциональности
+* Библиотеки для работы с базами данных
+
+14. Какой метод используется для отображения виджета в представлении в Yii2 framework?
+* render()
+* +widget() 
+* display()
+* show()
+
+15. Какой язык программирования используется в Yii2 framework?
+* +PHP 
+* JavaScript
+* Python
+* Ruby

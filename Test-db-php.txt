@@ -1,0 +1,50 @@
+1. Как установить соединение с базой данных MySQL в PHP?
+* Используя функцию `mysql_connect()`
+* +Используя функцию `mysqli_connect()`
+* Используя функцию `pdo_connect()`
+* Ни один из вариантов
+2. Как выполнить SQL-запрос к базе данных MySQL в PHP?
+* Используя функцию `mysql_query()`
+* +Используя функцию `mysqli_query()`
+* Используя функцию `pdo_query()`
+* Ни один из вариантов
+3. Как получить результаты выполненного SQL-запроса в PHP?
+* Используя функцию `mysql_fetch_array()`
+* +Используя функцию `mysqli_fetch_array()`
+* Используя функцию `pdo_fetch_array()`
+* Ни один из вариантов
+4. Какой оператор используется для добавления данных в таблицу MySQL в PHP?
+* +INSERT INTO
+* UPDATE
+* SELECT
+* DELETE FROM
+5. Каким методом класса mysqli можно закрыть соединение с базой данных в PHP?
+* close()
+* disconnect()
+* +mysqli_close() 
+* end()
+6. Каким методом класса mysqli можно получить результаты SQL-запроса в виде ассоциативного массива в PHP?
+* fetch_object()
+* fetch_array()
+* +fetch_assoc() 
+* fetch_row()
+7. Какой оператор используется для обновления данных в таблице MySQL в PHP?
+* INSERT INTO
+* +UPDATE 
+* SELECT
+* DELETE FROM
+8. Какой оператор используется для выборки данных из таблицы MySQL в PHP?
+* INSERT INTO
+* UPDATE
+* +SELECT 
+* DELETE FROM
+9. Какой оператор используется для удаления данных из таблицы MySQL в PHP?
+* INSERT INTO
+* UPDATE
+* SELECT
+* +DELETE FROM 
+10. Какой оператор используется для создания новой таблицы в MySQL в PHP?
+* +CREATE TABLE 
+* ALTER TABLE
+* INSERT INTO
+* UPDATE TABLE

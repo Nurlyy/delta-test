@@ -84,8 +84,13 @@ class SiteController extends Controller
         $themes = Theme::find()->where(['language_id' => $users_language->language_id])->all();
         $questions = Question::find()->all();
         $answers = Answer::find()->where(['user_id' => Yii::$app->user->id])->all();
+        $variants = [];
+        foreach($questions as $question){
+            $v = Variant::find()->where(['question_id' => $question->id])->all();
+            $variants[$question->id] = $v;
+        }
         $this->layout = 'main';
-        return $this->render('index', ['themes' => $themes, 'questions' => $questions, 'answers' => $answers]);
+        return $this->render('index', ['themes' => $themes, 'questions' => $questions, 'answers' => $answers, 'variants' => $variants]);
     }
 
 
@@ -145,7 +150,7 @@ class SiteController extends Controller
             $question_id = isset($_POST['question_id']) ? $_POST['question_id'] : null;
             $variants_id = isset($_POST['variants_id']) ? $_POST['variants_id'] : null;
             if(Answer::find()->where(['question_id' => $question_id, 'user_id' => Yii::$app->user->id])->one()!=null){
-                return $this->redirect('index');
+                return $this->redirect('/');
             }
             try {
                 $transaction = Yii::$app->db->beginTransaction();
@@ -178,8 +183,11 @@ class SiteController extends Controller
 
     public function actionViewResults()
     {
-        $theme_id = isset($_GET['theme_id']) ? $_GET['theme_id'] : null;
+        $theme_id = isset($_GET['theme_id']) ? htmlentities($_GET['theme_id']) : null;
         $theme = Theme::find()->where(['id' => $theme_id])->one();
+        if($theme == null){
+            return $this->redirect('/');
+        }
         $questions = Question::find()->where(['theme_id' => $theme_id])->asArray()->all();
         $answers = [];
         // $right_answers = [];

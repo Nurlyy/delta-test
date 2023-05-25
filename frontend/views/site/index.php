@@ -3,6 +3,31 @@ $count_answers = [];
 $right_answers = [];
 $unfinished_themes = 0;
 $finished_themes = 0;
+
+$total_variants = [];
+$tttotal_answers = [];
+
+foreach ($themes as $theme) {
+    foreach ($questions as $question) {
+        if ($question['theme_id'] == $theme['id']) {
+            foreach ($variants[$question['id']] as $variant) {
+                if ($variant['is_right'] == 1) {
+                    $total_variants[$question->id] = isset($total_variants[$question['id']]) ? $total_variants[$question['id']] + 1 : 1;
+                    // continue 2;
+                }
+            }
+            foreach ($answers as $answer) {
+                if ($answer['question_id'] == $question['id']) {
+                    $tttotal_answers[$question['id']] = isset($tttotal_answers[$question['id']]) ? $tttotal_questions[$question['id']] + 1 : 1;
+                }
+            }
+        }
+    }
+}
+
+// var_dump($total_variants);
+// exit;
+
 foreach ($themes as $theme) {
     $count_questions[$theme['id']] = 0;
     $count_answers[$theme['id']] = 0;
@@ -12,7 +37,11 @@ foreach ($themes as $theme) {
             foreach ($answers as $answer) {
                 if ($answer['question_id'] == $question['id']) {
                     // var_dump($answer['is_right']);exit;
-                    if($answer['is_right'] == 1 ){$right_answers[$theme['id']] = isset($right_answers[$theme['id']]) ? $right_answers[$theme['id']] + 1 : 1;}
+                    if ($answer['is_right'] == 1) {
+                        if ($tttotal_answers[$question['id']] == $total_variants[$question['id']]) {
+                            $right_answers[$theme['id']] = isset($right_answers[$theme['id']]) ? $right_answers[$theme['id']] + 1 : 1;
+                        }
+                    }
                     $count_answers[$theme['id']] = isset($count_answers[$theme['id']]) ? $count_answers[$theme['id']] + 1 : 1;
                     continue 2;
                 }
@@ -75,7 +104,7 @@ foreach ($themes as $theme) {
                 <?php }
                 if ($finished_themes > 0) {
                 ?>
-                    <div class="card" style="width: 90%; margin-left: auto; margin-right:auto; <?= ($unfinished_themes > 0)?' margin-top:70px;':'' ?>">
+                    <div class="card" style="width: 90%; margin-left: auto; margin-right:auto; <?= ($unfinished_themes > 0) ? ' margin-top:70px;' : '' ?>">
                         <div class="card-header">
                             <h4>Список пройденных тестов:</h4>
                         </div>

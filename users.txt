@@ -1,0 +1,24 @@
+PYTHON{
+    Kumarov_A: jG6t#9zDn3LW
+    Asimhanov_E: X2y!lRsP7eAk
+    Kairhanov_A: V5m^zKvQ0jFD
+    Zhanatbekov_D: Q1u@yFnT3kZB
+    Buzhikenov_M: D8c!sVmN5rWQ
+    Aueshanov_R: R4g#mLpW2qCZ
+    Kenzheev_E: J9e@tXhD6rKv
+    Zamanbekov_T: H7b!fVtQ0mCx
+    Shotaev_A: S5n$yDrM2tZG
+    Dubaev_K: B6l!eDwJ7rYH
+    Kabdeshev_A: W3f!nVbO1kXQ
+    Serikkanov_I: E9z%rKbG5tNL
+    Tleubekov_D: I8v#dNsJkVNO82DW
+}
+PHP{
+    Sekerbaeva_G: Y2j9p#Fs4m
+    Bigaliev_A: X8c@h3kG5e
+    Asylkhan_M: R#v2b%Gk6P
+    Orazov_A: L6$d#Rn7Qp
+    Eremenko_A: F4t@w2Cp5J
+    Zakirov_A: M9@j6Rz#B7
+    Bidakhmetov_A: K5s#X8w@R3
+}
