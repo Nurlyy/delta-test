@@ -67,7 +67,7 @@ class SiteController extends Controller
                     'allow' => true,
                     'roles' => ['@', User::STATUS_PARTICIPANT],
                     // 'roles' => ['@'],
-                    
+
                 ],
             ],
         ];
@@ -85,7 +85,7 @@ class SiteController extends Controller
         $questions = Question::find()->all();
         $answers = Answer::find()->where(['user_id' => Yii::$app->user->id])->all();
         $variants = [];
-        foreach($questions as $question){
+        foreach ($questions as $question) {
             $v = Variant::find()->where(['question_id' => $question->id])->all();
             $variants[$question->id] = $v;
         }
@@ -97,49 +97,111 @@ class SiteController extends Controller
 
     public function actionTestPage()
     {
-        $theme_id = isset($_GET['theme_id']) ? $_GET['theme_id'] : null;
-        $question_count = 0;
-        if (isset($theme_id)) {
+        $theme_id = isset($_GET['theme_id']) ? htmlentities($_GET['theme_id']) : null;
+        $q_count = isset($_GET['q_count']) ? $_GET['q_count'] : null;
+
+        if (isset($theme_id) && isset($q_count)) {
             $theme = Theme::find()->where(['id' => $theme_id])->one();
+            if ($theme == null) {
+                return $this->redirect("/");
+            }
+        } else {
+
+            return $this->redirect("/");
         }
-        $answers = Answer::find()->select('question_id')->where(['user_id' => Yii::$app->user->id])->asArray()->all();
+        $questions_count = Question::find()->where(['theme_id' => $theme_id])->asArray()->all();
         $temp = [];
+        foreach ($questions_count as $quest_c) {
+            array_push($temp, $quest_c['id']);
+        }
+        $answers = Answer::find()->where(['user_id' => Yii::$app->user->id])->andWhere(['in', 'question_id',  $temp])->asArray()->all();
+        // var_dump($answers);exit;
+        // $temp = [];
+        // foreach ($answers as $answer) {
+        //     array_push($temp, $answer['question_id']);
+        // }
+        // $answers = $temp;
+
+        $q = null;
+        $sounter = 1;
+
+        $variant_answers = [];
         foreach ($answers as $answer) {
-            array_push($temp, $answer['question_id']);
+            $variant_answers[$answer['variant_id']] = $answer;
+        }
+
+        $temp = [];
+        foreach ($answers as $a) {
+            $temp[$a['question_id']] = $a;
         }
         $answers = $temp;
-        $questions_count = Question::find()->where(['theme_id' => $theme_id])->asArray()->all();
-        $question = Question::find()->where(['theme_id' => $theme->id])->andWhere(['not in', 'id', $answers])->one();
-        if (isset($question)) {
-            if(Answer::find()->where(['question_id' => $question->id, 'user_id' => Yii::$app->user->id])->one()!=null){
-                // var_dump(Answer::find()->where(['question_id' => $question->id, 'user_id' => Yii::$app->user->id])->one());exit;
-                return $this->redirect('index');
+        $unanswered = null;
+        // var_dump($q_count);exit;
+        // var_dump(count($questions_count));exit;
+        foreach ($questions_count as $quest_c) {
+            if ($q_count == $sounter) {
+                $q = $quest_c;
+                // var_dump("tr");exit;
+            }
+            
+            if (!isset($answers[$quest_c['id']]) && $unanswered == null) {
+                $unanswered = $sounter;
+                // var_dump(!isset($answers[$quest_c['id']]));exit;
+                // var_dump($unanswered);
+            }
+            $sounter++;
+        }
+
+
+        // exit;
+
+        if ($q_count > count($questions_count) || $q_count <= 0) {
+            // return false;
+            if($unanswered == null){
+                return $this->redirect("/");
+            }
+            else{
+                return $this->redirect("/site/test-page?theme_id={$theme->id}&q_count={$unanswered}");
             }
         }
-        if($question == null){
+        $question = Question::find()->where(['theme_id' => $theme->id, 'id' => $q['id']])->one();
+        // $question = Question::find()->where(['theme_id' => $theme->id])->andWhere(['not in', 'id', $answers])->one();
+        // if (isset($question)) {
+        //     if(Answer::find()->where(['question_id' => $question->id, 'user_id' => Yii::$app->user->id])->one()!=null){
+        //         // var_dump(Answer::find()->where(['question_id' => $question->id, 'user_id' => Yii::$app->user->id])->one());exit;
+        //         return $this->redirect('index');
+        //     }
+        // }
+        if ($question == null) {
             return $this->redirect('index');
         }
-        $temp = [];
-        foreach($answers as $answer){
-            foreach($questions_count as $q){
-                if($answer == $q['id']){
-                    $question_count++;
-                    array_push($temp, $answer);
-                    continue 2;
-                }
-            }
-        }
-        $answers = $temp;
-        $issecond = ((count($answers) + 1) == count($questions_count)) ? 'false' : 'true';
+        // $temp = [];
+        // foreach($answers as $answer){
+        //     foreach($questions_count as $q){
+        //         if($answer['question_id'] == $q['id']){
+        //             // $q_count++;
+        //             array_push($temp, $answer);
+        //             continue 2;
+        //         }
+        //     }
+        // }
+        // $answers = $temp;
+        // var_dump($answers);exit;
+
+
+        // $issecond = ((count($answers) + 1) === count($questions_count)) ? 'false' : 'true';
         $variants = Variant::find()->where(['question_id' => $question->id])->all();
 
         $this->layout = 'main';
         return $this->render('testpage', [
+            'answers' => $answers,
             'theme' => $theme,
             'question' => $question,
             'variants' => $variants,
-            'question_count' => $question_count,
-            'issecond' => $issecond,
+            'question_count' => $q_count,
+            // 'issecond' => $issecond,
+            'questions' => $questions_count,
+            'variant_answers' => $variant_answers,
         ]);
     }
 
@@ -149,17 +211,22 @@ class SiteController extends Controller
         if ($this->request->isPost) {
             $question_id = isset($_POST['question_id']) ? $_POST['question_id'] : null;
             $variants_id = isset($_POST['variants_id']) ? $_POST['variants_id'] : null;
-            if(Answer::find()->where(['question_id' => $question_id, 'user_id' => Yii::$app->user->id])->one()!=null){
-                return $this->redirect('/');
-            }
+            // var_dump($variants_id);exit;
+            // if(Answer::find()->where(['question_id' => $question_id, 'user_id' => Yii::$app->user->id])->one()!=null){
+            //     return $this->redirect('/');
+            // }
             try {
                 $transaction = Yii::$app->db->beginTransaction();
+                $answers = Answer::find()->where(['question_id' => $question_id, 'user_id' => Yii::$app->user->id])->all();
+                foreach ($answers as $answer) {
+                    $answer->delete();
+                }
                 foreach ($variants_id as $variant_id) {
                     $variant = Variant::find()->where(['id' => $variant_id])->one();
-                    $answer = Answer::find()->where(['question_id' => $question_id, 'user_id' => Yii::$app->user->id, 'variant_id' => $variant_id])->one();
-                    if ($answer == null) {
-                        $answer = new Answer();
-                    }
+                    // $answer = Answer::find()->where(['question_id' => $question_id, 'user_id' => Yii::$app->user->id])->one();
+                    // if ($answer == null) {
+                    $answer = new Answer();
+                    // }
                     $answer->question_id = $question_id;
                     $answer->variant_id = $variant_id;
                     $answer->user_id = Yii::$app->user->id;
@@ -185,7 +252,7 @@ class SiteController extends Controller
     {
         $theme_id = isset($_GET['theme_id']) ? htmlentities($_GET['theme_id']) : null;
         $theme = Theme::find()->where(['id' => $theme_id])->one();
-        if($theme == null){
+        if ($theme == null) {
             return $this->redirect('/');
         }
         $questions = Question::find()->where(['theme_id' => $theme_id])->asArray()->all();

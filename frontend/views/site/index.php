@@ -82,7 +82,7 @@ foreach ($themes as $theme) {
                                         <div><?= $theme->name ?>
                                             <button style="float:right; position:relative;" class="button" disabled>
                                                 <a style="text-decoration:none; color:white;" href="<?php if ($count_answers[$theme['id']] < $count_questions[$theme['id']]) {
-                                                                                                        echo '/site/test-page?theme_id=' . $theme->id . '&q_count=' . $count_answers[$theme['id']];
+                                                                                                        echo '/site/test-page?theme_id=' . $theme->id . '&q_count=' . ($count_answers[$theme['id']] == 0 ? "1" : $count_answers[$theme['id']] + 1) ;
                                                                                                     } ?>">
                                                     <?php if ($count_answers[$theme['id']] == 0) {
                                                         echo 'Начать';
