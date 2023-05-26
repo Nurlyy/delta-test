@@ -315,6 +315,7 @@ class ThemeController extends Controller
         if ($question_id !== null) {
             $question = Question::find()->where(['id' => $question_id])->one();
             $theme = Theme::findOne(['id' => $question->theme_id]);
+            $themes = Theme::find()->where(['language_id' => $language->id])->all();
             $variants = Variant::find()->where(['question_id' => $question->id])->asArray()->all();
             if ($this->request->isPost) {
                 try {
@@ -364,6 +365,7 @@ class ThemeController extends Controller
                 'variants' => $variants,
                 'theme' => $theme,
                 'language' => $language,
+                'themes' => $themes,
             ]);
         }
     }

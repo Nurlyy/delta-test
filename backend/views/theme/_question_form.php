@@ -44,7 +44,9 @@ use yii\bootstrap5\ActiveForm;
                 <div class="mb-3 field-question-theme_id required">
                     <label class="form-label" for="question-theme_id">Название темы</label>
                     <select id="question-theme_id" class="form-select" name="Question[theme_id]" aria-required="true">
-                        <option value="8">&#xFEFF;<?= $theme->name ?></option>
+                        <?php foreach($themes as $them){ ?>
+                            <option value="<?= $them->id ?>" <?= $them->id == $theme->id ? "selected" : '' ?>>&#xFEFF;<?= $them->name ?></option>
+                        <?php } ?>
                     </select>
 
                     <div class="invalid-feedback"></div>
@@ -165,6 +167,7 @@ use yii\bootstrap5\ActiveForm;
             send_data['Question'] = ".json_encode($question).";
             send_data['Question']['title'] = $('#question-title').val();
             send_data['Question']['code_text'] = $('#question-code_text').val();
+            send_data['Question']['theme_id'] = $('#question-theme_id').val();
             console.log(send_data);
             $.ajax({
                 url: window.location.href,

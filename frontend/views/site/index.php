@@ -13,7 +13,6 @@ foreach ($themes as $theme) {
             foreach ($variants[$question['id']] as $variant) {
                 if ($variant['is_right'] == 1) {
                     $total_variants[$question->id] = isset($total_variants[$question['id']]) ? $total_variants[$question['id']] + 1 : 1;
-                    // continue 2;
                 }
             }
             foreach ($answers as $answer) {
@@ -123,12 +122,14 @@ foreach ($themes as $theme) {
                                                     } ?>
                                                 </a>
                                             </button>
-                                            <div style="float:right; position:relative; margin-right:30px;" class="btn btn-success">
-                                                <?= $right_answers[$theme['id']] ?>/<?= $count_questions[$theme['id']] ?>
-                                            </div>
-                                            <div style="float:right; position:relative; margin-right:30px;" class="btn btn-warning">
-                                                <?= $count_answers[$theme['id']] ?>/<?= $count_questions[$theme['id']] ?>
-                                            </div>
+                                            <?php if(isset($right_answers[$theme['id']])){?>
+                                                <div style="float:right; position:relative; margin-right:30px;" class="btn btn-success">
+                                                    <?= $right_answers[$theme['id']] ?>/<?= $count_questions[$theme['id']] ?>
+                                                </div>
+                                                <div style="float:right; position:relative; margin-right:30px;" class="btn btn-warning">
+                                                    <?= $count_answers[$theme['id']] ?>/<?= $count_questions[$theme['id']] ?>
+                                                </div>
+                                            <?php } ?>
                                         </div>
                                     </li>
                             <?php }
