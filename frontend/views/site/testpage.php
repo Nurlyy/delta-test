@@ -6,7 +6,7 @@ foreach ($variants as $variant) {
     }
 }
 
-// var_dump($answers);exit;
+// var_dump($is_last);exit;
 
 ?>
 
@@ -34,9 +34,10 @@ foreach ($variants as $variant) {
             </div>
         </div>
     </div>
-
+    
+    <button <?= $question_count == 1 ? "disabled" : "" ?> onclick="window.location.href='/site/test-page?theme_id=<?=$theme->id?>&q_count=<?=$question_count-1?>'" style="position:relative; text-align:center; width:20%; margin-left:auto; margin-right:auto; margin-top:30px;" class="btn btn-light"><< Назад</button>
     <button disabled id="submitbutton" style="position:relative; text-align:center; width:20%; margin-left:auto; margin-right:auto; margin-top:30px;" class="btn btn-success">Ответить</button>
-
+    <button <?= $question_count == count($questions) ? "disabled" : "" ?> onclick="window.location.href='/site/test-page?theme_id=<?=$theme->id?>&q_count=<?=$question_count+1?>'" style="position:relative; text-align:center; width:20%; margin-left:auto; margin-right:auto; margin-top:30px;" class="btn btn-light">Вперед >></button>
     <div class="col-10 row justify-content-center" style="margin-left:auto; margin-right:auto; margin-top:50px;">
         <div class="row text-center justify-content-center">
             <h1>Все вопросы</h1>

@@ -136,6 +136,7 @@ class SiteController extends Controller
         }
         $answers = $temp;
         $unanswered = null;
+        $unanswereds = [];
         // var_dump($q_count);exit;
         // var_dump(count($questions_count));exit;
         foreach ($questions_count as $quest_c) {
@@ -144,13 +145,18 @@ class SiteController extends Controller
                 // var_dump("tr");exit;
             }
             
-            if (!isset($answers[$quest_c['id']]) && $unanswered == null) {
-                $unanswered = $sounter;
+            if (!isset($answers[$quest_c['id']])) {
+                if($unanswered == null){
+                    $unanswered = $sounter;
+                }
+                array_push($unanswereds, $quest_c);
                 // var_dump(!isset($answers[$quest_c['id']]));exit;
                 // var_dump($unanswered);
             }
             $sounter++;
         }
+
+        // var_dump($unanswereds);exit;
 
 
         // exit;
@@ -191,7 +197,7 @@ class SiteController extends Controller
 
         // $issecond = ((count($answers) + 1) === count($questions_count)) ? 'false' : 'true';
         $variants = Variant::find()->where(['question_id' => $question->id])->all();
-
+        $is_last = count($unanswereds) === 1 ? 'true' : 'false';
         $this->layout = 'main';
         return $this->render('testpage', [
             'answers' => $answers,
@@ -199,6 +205,7 @@ class SiteController extends Controller
             'question' => $question,
             'variants' => $variants,
             'question_count' => $q_count,
+            'is_last' => $is_last,
             // 'issecond' => $issecond,
             'questions' => $questions_count,
             'variant_answers' => $variant_answers,
