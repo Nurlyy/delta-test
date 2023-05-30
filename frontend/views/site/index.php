@@ -6,6 +6,7 @@ $finished_themes = 0;
 
 $total_variants = [];
 $tttotal_answers = [];
+$total_right_answers = 0;
 
 foreach ($themes as $theme) {
     foreach ($questions as $question) {
@@ -17,7 +18,7 @@ foreach ($themes as $theme) {
             }
             foreach ($answers as $answer) {
                 if ($answer['question_id'] == $question['id']) {
-                    $tttotal_answers[$question['id']] = isset($tttotal_answers[$question['id']]) ? $tttotal_questions[$question['id']] + 1 : 1;
+                    $tttotal_answers[$question['id']] = isset($tttotal_answers[$question['id']]) ? $tttotal_answers[$question['id']] + 1 : 1;
                 }
             }
         }
@@ -38,6 +39,7 @@ foreach ($themes as $theme) {
                     // var_dump($answer['is_right']);exit;
                     if ($answer['is_right'] == 1) {
                         if ($tttotal_answers[$question['id']] == $total_variants[$question['id']]) {
+                            $total_right_answers += 1;
                             $right_answers[$theme['id']] = isset($right_answers[$theme['id']]) ? $right_answers[$theme['id']] + 1 : 1;
                         }
                     }
@@ -48,8 +50,7 @@ foreach ($themes as $theme) {
         }
     }
     // var_dump($count_answers);
-    // var_dump($count_questions);
-    // exit;
+    
     if ($count_answers[$theme['id']] >= 0 && $count_answers[$theme['id']] < $count_questions[$theme['id']]) {
         $unfinished_themes++;
     }
@@ -58,6 +59,9 @@ foreach ($themes as $theme) {
     }
     // var_dump($right_answers);exit;
 }
+
+// var_dump($total_right_answers);
+    // exit;
 
 ?>
 <div class="site-index">

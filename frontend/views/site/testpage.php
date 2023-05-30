@@ -22,9 +22,9 @@ foreach ($variants as $variant) {
                 <div class="panel panel-default">
                     <div class="panel-body" style=" padding:10px;">
                         <?php foreach ($variants as $variant) { ?>
-                            <label>
+                            <label style="display:flex;flex-direction:row; align-items:center;">
                                 <input <?= isset($variant_answers[$variant->id]) ? "checked" : "" ?> <?= $is_right_count > 1 ? "class='form-check-input' type='checkbox'" : 'type="radio"' ?> onclick="document.getElementById('submitbutton').disabled=false;" id="variant_id" name="variant_id" value="<?= $variant->id ?>" required>
-                                <span class="wrappable"><?= $variant->title ?></span>
+                                <span class="wrappable" style="margin-left:5px;"><pre style="margin-bottom:0;"><?= $variant->title ?></pre></span>
                             </label>
                             <br>
                             <!-- <label for="child"></label> -->

@@ -20,6 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= $this->render('_question_form', [
         'question' => $question,
         'theme' => $theme,
+        'themes' => $themes,
         // 'variant1' => $variant1,
         // 'variant2' => $variant2,
         // 'variant3' => $variant3,

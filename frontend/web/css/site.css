@@ -162,7 +162,7 @@ a.desc:after {
     background-color: #facfcc !important;
 }
 
-pre {
+.code_text {
     background-color: rgb(48, 48, 48) !important;
     color:white !important;
     padding:15px;

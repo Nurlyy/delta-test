@@ -259,6 +259,7 @@ class ThemeController extends Controller
         $question = new Question();
         $variants = [];
         $theme = Theme::findOne(['id' => $id]);
+        $themes = Theme::find()->where(['language_id' => $language->id])->all();
         if ($this->request->isPost) {
             try {
                 $transaction = \Yii::$app->db->beginTransaction();
@@ -305,6 +306,7 @@ class ThemeController extends Controller
             'theme' => $theme,
             'variants' => $variants,
             'language' => $language,
+            'themes' => $themes,
         ]);
     }
 

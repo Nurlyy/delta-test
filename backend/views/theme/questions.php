@@ -15,6 +15,8 @@ $this->params['breadcrumbs'][] = ['label' => $language->name, 'url' => ['/langua
 $this->params['breadcrumbs'][] = ['label' => 'Темы', 'url' => ['/languages/'.$language->id.'/theme']];
 $this->params['breadcrumbs'][] = ['label' => $theme->name, 'url' => ['/languages/'.$language->id.'/theme/'.$theme->id]];
 $this->params['breadcrumbs'][] = 'Вопросы';
+
+$question_count = 0;
 ?>
 <div class="theme-index">
 
@@ -35,10 +37,11 @@ $this->params['breadcrumbs'][] = 'Вопросы';
                     </div>
                 </div>
 
-                <?php foreach ($questions as $question) { ?>
+                <?php foreach ($questions as $question) {
+                    $question_count += 1; ?>
                     <div class="card language-item mb-3">
                         <div class="card-header" style="position:relative;">
-                            <?= $question->title ?>
+                            <?php $t=substr($question['title'], 3); echo $question_count.") ".$t ?>
                             <div style="float:right; position:relative;">
                                 <div class="btn btn-warning " style="float:right; position:relative;margin-right:50px;"><a class="btn-a" href="/backend/languages/<?= $language->id ?>/theme/<?= $theme->id ?>/update-question/<?= $question->id ?>">Изменить</a></div>
                                 <div class="btn btn-danger " style="float:right; position:relative;margin-right:50px;"><a class="btn-a" href="/backend/languages/<?= $language->id ?>/theme/<?= $theme->id ?>/delete-question/<?= $question->id ?>">Удалить</a></div>
