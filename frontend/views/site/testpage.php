@@ -36,7 +36,7 @@ foreach ($variants as $variant) {
     </div>
     
     <button <?= $question_count == 1 ? "disabled" : "" ?> onclick="window.location.href='/site/test-page?theme_id=<?=$theme->id?>&q_count=<?=$question_count-1?>'" style="position:relative; text-align:center; width:20%; margin-left:auto; margin-right:auto; margin-top:30px;" class="btn btn-light"><< Назад</button>
-    <button disabled id="submitbutton" style="position:relative; text-align:center; width:20%; margin-left:auto; margin-right:auto; margin-top:30px;" class="btn btn-success">Ответить</button>
+    <button disabled id="submitbutton" style="position:relative; text-align:center; width:20%; margin-left:auto; margin-right:auto; margin-top:30px;" class="btn btn-success"><?= $is_last == 'true' ? 'Завершить тест' : 'Ответить' ?></button>
     <button <?= $question_count == count($questions) ? "disabled" : "" ?> onclick="window.location.href='/site/test-page?theme_id=<?=$theme->id?>&q_count=<?=$question_count+1?>'" style="position:relative; text-align:center; width:20%; margin-left:auto; margin-right:auto; margin-top:30px;" class="btn btn-light">Вперед >></button>
     <div class="col-10 row justify-content-center" style="margin-left:auto; margin-right:auto; margin-top:50px;">
         <div class="row text-center justify-content-center">
@@ -75,6 +75,7 @@ foreach ($variants as $variant) {
             url: '/site/answer',
             type: 'POST',
             data: {
+                is_last: ".$is_last.",
                 variants_id: checkedValues,
                 question_id: {$question->id},
                 '" . Yii::$app->request->csrfParam . "': '" . Yii::$app->request->csrfToken . "'

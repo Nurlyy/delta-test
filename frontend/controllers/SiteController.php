@@ -198,6 +198,9 @@ class SiteController extends Controller
         // $issecond = ((count($answers) + 1) === count($questions_count)) ? 'false' : 'true';
         $variants = Variant::find()->where(['question_id' => $question->id])->all();
         $is_last = count($unanswereds) === 1 ? 'true' : 'false';
+        if(Answer::find()->where(['question_id' => $question->id, 'user_id' => Yii::$app->user->id])->one()!=null){
+            $is_last = 'false';
+        }
         $this->layout = 'main';
         return $this->render('testpage', [
             'answers' => $answers,
@@ -218,23 +221,24 @@ class SiteController extends Controller
         if ($this->request->isPost) {
             $question_id = isset($_POST['question_id']) ? $_POST['question_id'] : null;
             $variants_id = isset($_POST['variants_id']) ? $_POST['variants_id'] : null;
+            $is_last = isset($_POST['is_last'])? $_POST['is_last'] : null;
             // var_dump($variants_id);exit;
             // if(Answer::find()->where(['question_id' => $question_id, 'user_id' => Yii::$app->user->id])->one()!=null){
             //     return $this->redirect('/');
             // }
             try {
                 $transaction = Yii::$app->db->beginTransaction();
-                $answers = Answer::find()->where(['question_id' => $question_id, 'user_id' => Yii::$app->user->id])->all();
+                $answers = Answer::find()->where(['question_id' => htmlentities($question_id), 'user_id' => Yii::$app->user->id])->all();
                 foreach ($answers as $answer) {
                     $answer->delete();
                 }
                 foreach ($variants_id as $variant_id) {
-                    $variant = Variant::find()->where(['id' => $variant_id])->one();
+                    $variant = Variant::find()->where(['id' => htmlentities($variant_id)])->one();
                     // $answer = Answer::find()->where(['question_id' => $question_id, 'user_id' => Yii::$app->user->id])->one();
                     // if ($answer == null) {
                     $answer = new Answer();
                     // }
-                    $answer->question_id = $question_id;
+                    $answer->question_id = htmlentities($question_id);
                     $answer->variant_id = $variant_id;
                     $answer->user_id = Yii::$app->user->id;
                     $answer->is_right = $variant->is_right;
@@ -248,7 +252,12 @@ class SiteController extends Controller
                     }
                 }
                 $transaction->commit();
-                return true;
+                if($is_last == 'false'){
+                    return true;
+                }
+                else{
+                    return $this->redirect('index');
+                }
             } catch (\Exception $e) {
                 $transaction->rollBack();
             }

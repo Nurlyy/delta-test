@@ -50,7 +50,7 @@ foreach ($themes as $theme) {
         }
     }
     // var_dump($count_answers);
-    
+
     if ($count_answers[$theme['id']] >= 0 && $count_answers[$theme['id']] < $count_questions[$theme['id']]) {
         $unfinished_themes++;
     }
@@ -61,7 +61,7 @@ foreach ($themes as $theme) {
 }
 
 // var_dump($total_right_answers);
-    // exit;
+// exit;
 
 ?>
 <div class="site-index">
@@ -86,7 +86,7 @@ foreach ($themes as $theme) {
                                         <div><?= $theme->name ?>
                                             <button style="float:right; position:relative;" class="button" disabled>
                                                 <a style="text-decoration:none; color:white;" href="<?php if ($count_answers[$theme['id']] < $count_questions[$theme['id']]) {
-                                                                                                        echo '/site/test-page?theme_id=' . $theme->id . '&q_count=' . ($count_answers[$theme['id']] == 0 ? "1" : $count_answers[$theme['id']] + 1) ;
+                                                                                                        echo '/site/test-page?theme_id=' . $theme->id . '&q_count=' . ($count_answers[$theme['id']] == 0 ? "1" : $count_answers[$theme['id']] + 1);
                                                                                                     } ?>">
                                                     <?php if ($count_answers[$theme['id']] == 0) {
                                                         echo 'Начать';
@@ -126,7 +126,7 @@ foreach ($themes as $theme) {
                                                     } ?>
                                                 </a>
                                             </button>
-                                            <?php if(isset($right_answers[$theme['id']])){?>
+                                            <?php if (isset($right_answers[$theme['id']])) { ?>
                                                 <div style="float:right; position:relative; margin-right:30px;" class="btn btn-success">
                                                     <?= $right_answers[$theme['id']] ?>/<?= $count_questions[$theme['id']] ?>
                                                 </div>
@@ -140,7 +140,27 @@ foreach ($themes as $theme) {
                             } ?>
                         </ul>
                     </div>
+                    <?php
+
+                    $total_total_right = 0;
+                    $total_total_questions = 0;
+                    foreach ($themes as $theme) {
+                        if($count_answers[$theme['id']] == $count_questions[$theme['id']]) {
+                            $total_total_right += $right_answers[$theme['id']];
+                        }
+                    }
+
+                    foreach ($count_questions as $c) {
+                        $total_total_questions += $c;
+                    }
+
+                    ?>
+                    <br>
+                    <div class="card card-body" style="background-color:#017a87">
+                        <h3 class="text-center text-white">Общий результат: <?= $total_total_right ?>/<?= $total_total_questions ?></h3>
+                    </div>
                 <?php } ?>
+
             </div>
         </div>
 
