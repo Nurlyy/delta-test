@@ -139,7 +139,7 @@ a.desc:after {
     background-color: #facfcc !important;
 }
 
-pre {
+.code_text {
     background-color: rgb(48, 48, 48) !important;
     color:white !important;
     padding:15px;
@@ -154,6 +154,15 @@ code {
     width:fit-content;
     border-radius: 5px;
 }
+
+label {
+    white-space:nowrap;
+}
+
+.wrappable {
+    white-space:normal;
+}
+
 
 .language-item {
     background-color: #badcff;

@@ -99,14 +99,14 @@ class SiteController extends Controller
     {
         $theme_id = isset($_GET['theme_id']) ? htmlentities($_GET['theme_id']) : null;
         $q_count = isset($_GET['q_count']) ? $_GET['q_count'] : null;
-
+        $users_language = UsersLanguages::find()->where(['user_id' => Yii::$app->user->id])->one();
+        $themes = Theme::find()->where(['language_id' => $users_language->language_id])->all();
         if (isset($theme_id) && isset($q_count)) {
             $theme = Theme::find()->where(['id' => $theme_id])->one();
-            if ($theme == null) {
+            if ($theme == null && !in_array($theme, $themes)) {
                 return $this->redirect("/");
             }
         } else {
-
             return $this->redirect("/");
         }
         $questions_count = Question::find()->where(['theme_id' => $theme_id])->asArray()->all();

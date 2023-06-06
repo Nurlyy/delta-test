@@ -218,11 +218,11 @@ class UserController extends Controller
         $variants = [];
         foreach ($questions as $question) {
             // array_push($right_answers, RightAnswer::find()->where(['question_id'=>$question['id']])->one());
-            array_push($answers, Answer::find()->where(['user_id' => $user->id])->andWhere(['question_id' => $question['id']])->asArray()->all());
-            array_push($variants, Variant::find()->where(['question_id' => $question['id']])->asArray()->all());
+            $answers[$question['id']] = Answer::find()->where(['user_id' => $user->id])->andWhere(['question_id' => $question['id']])->asArray()->all();
+            $variants[$question['id']] = Variant::find()->where(['question_id' => $question['id']])->asArray()->all();
             // var_dump($variants);
         }
-        if ($answers[0] == null) {
+        if (empty($answers)) {
             return $this->redirect('index');
         }
         return $this->render('view_results', [

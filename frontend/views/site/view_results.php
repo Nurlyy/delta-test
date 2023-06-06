@@ -21,35 +21,6 @@ foreach ($questions as $question) {
     <h2 class="text-center">Ваши результаты</h2>
     <br><br><br>
     <?php $counter = 1;
-    // foreach ($questions as $question) {
-    //     $question_count += 1;
-    //     $temp_variants = [];
-    //     $is_right_count = 0;
-    //     $is_chosen_count = 0;
-    //     $is_chosen_right = false;
-    //     $chosen_right_variants = [];
-    //     foreach ($variants[$question['id']] as $variant) {
-    //         if ($variant['question_id'] == $question['id']) {
-    //             if ($variant['is_right'] == 1) {
-    //                 $is_right_count += 1;
-    //             }
-    //             $variant['is_chosen'] = false;
-    //             foreach ($answers[$question['id']] as $answer) {
-    //                 if ($answer['variant_id'] == $variant['id']) {
-    //                     $variant['is_chosen'] = true;
-    //                     if ($variant['is_right'] == 1) {
-    //                         $chosen_right_variants[$question['id']] = isset($chosen_right_variants[$question['id']]) ? $chosen_right_variants[$question['id']] + 1 : 1;
-    //                     }
-    //                     $is_chosen_count += 1;
-    //                 }
-    //             }
-
-    //             array_push($temp_variants, $variant);
-    //         }
-    //     }
-    //     if(isset($chosen_right_variants[$question['id']]) && $chosen_right_variants[$question['id']] == $is_chosen_count){
-    //         $is_chosen_right = true;
-    //     }
     foreach ($questions as $question) {
         $question_count += 1;
         $temp_variants = [];
