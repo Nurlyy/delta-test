@@ -164,18 +164,19 @@ class UserController extends Controller
     public function actionView()
     {
         $user_id = $_GET['id'];
-        $users_languages = UsersLanguages::find()->where(['user_id' => $user_id])->one();
-        $model = User::find()->where(['id' => $user_id])->one();
-        $themes = Theme::find()->where(['language_id' => $users_languages->language_id])->all();
+        // $users_languages = UsersLanguages::find()->where(['user_id' => $user_id])->one();
+        $user = User::find()->where(['id' => $user_id])->one();
+        $users_language = UsersLanguages::find()->where(['user_id' => $user->id])->one();
+        $themes = Theme::find()->where(['language_id' => $users_language->language_id])->all();
         $questions = Question::find()->all();
-        $answers = Answer::find()->where(['user_id' => $user_id])->all();
-        return $this->render('view', [
-            'model' => $model,
-            'themes' => $themes,
-            'questions' => $questions,
-            'answers' => $answers,
-            'users_languages' => $users_languages,
-        ]);
+        $answers = Answer::find()->where(['user_id' => $user->id])->all();
+        $variants = [];
+        foreach ($questions as $question) {
+            $v = Variant::find()->where(['question_id' => $question->id])->all();
+            $variants[$question->id] = $v;
+        }
+        // $this->layout = 'main';
+        return $this->render('view', ['model' => $user,'themes' => $themes, 'questions' => $questions, 'answers' => $answers, 'variants' => $variants]);
     }
 
 

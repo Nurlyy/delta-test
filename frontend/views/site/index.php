@@ -153,11 +153,12 @@ foreach ($themes as $theme) {
                     foreach ($count_questions as $c) {
                         $total_total_questions += $c;
                     }
-
+                    $result = round($total_total_right / $total_total_questions * 100, 1);
                     ?>
                     <br>
                     <div class="card card-body" style="background-color:#017a87">
                         <h3 class="text-center text-white">Общий результат: <?= $total_total_right ?>/<?= $total_total_questions ?></h3>
+                        <h3 class="text-center text-white">Общие баллы: <?= $result ?>%</h3>
                     </div>
                 <?php } ?>
 
