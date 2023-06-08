@@ -156,6 +156,10 @@ class SiteController extends Controller
             $sounter++;
         }
 
+        if(count($unanswereds) == 0){
+            return $this->redirect('/');
+        }
+
         // var_dump($unanswereds);exit;
 
 
